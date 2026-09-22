@@ -5,6 +5,7 @@ import { saveUserToDB, saveProfileToDB } from '@/lib/dbSync';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
   login: (email: string, password: string, role: string) => void;
   logout: () => void;
   register: (name: string, email: string, password: string, role: string, gradeLevel?: number) => void;
@@ -252,6 +253,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isAuthenticated: !!user,
+        loading: false,
         login,
         logout,
         register,

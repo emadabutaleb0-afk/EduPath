@@ -4,8 +4,12 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "dev": "vite --config vite.student.config.ts --host",
+    "dev:student": "vite --config vite.student.config.ts --host",
+    "dev:teacher": "vite --config vite.teacher.config.ts --host",
+    "build:student": "vite build --config vite.student.config.ts",
+    "build:teacher": "vite build --config vite.teacher.config.ts",
+    "build": "npm run build:student && npm run build:teacher && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
@@ -15,6 +19,7 @@
     "db:setup": "tsx server/db/setup.ts"
   },
   "dependencies": {
+    "@heyputer/puter.js": "^2.6.3",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -46,8 +51,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "embla-carousel-react": "^8.6.0",
     "dotenv": "^16.4.5",
+    "embla-carousel-react": "^8.6.0",
     "express": "^4.21.2",
     "framer-motion": "^12.23.22",
     "input-otp": "^1.4.2",

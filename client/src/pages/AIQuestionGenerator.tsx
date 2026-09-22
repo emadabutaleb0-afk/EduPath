@@ -473,34 +473,64 @@ export default function AIQuestionGenerator({ embedMode = false, onApproved }: {
     }
 
     let questionsList: any[] = [];
-    const databaseQuestions = getQuestionsByTopic(topic, subject);
-
-    if (databaseQuestions.length > 0) {
-      questionsList = databaseQuestions.map((q, idx) => ({
-        id: `ai-q-${Date.now()}-${idx}`,
-        text: q.text,
-        type: q.type,
-        options: q.options,
-        correctAnswer: q.correctAnswer,
-        explanation: q.explanation,
-        subject,
-        gradeLevel,
-        difficulty: difficulty as 'easy' | 'medium' | 'hard',
-        generatedAt: new Date().toISOString(),
-        status: 'pending' as const,
-        topic: q.topic,
-        confidenceScore: Math.floor(Math.random() * 10 + 90),
-      }));
-
-      if (questionsList.length < quantity) {
-        const remaining = quantity - questionsList.length;
-        const dynamicList = generateDynamicQuestions(topic, subject, customPrompt, exampleQuestion, documentText, difficulty, remaining);
-        questionsList = [...questionsList, ...dynamicList];
-      } else if (questionsList.length > quantity) {
-        questionsList = questionsList.slice(0, quantity);
+    try {
+      const { askPuterAI } = await import('@/lib/puterAI');
+      const prompt = `Generate ${quantity} ${difficulty} level multiple choice or true/false questions for ${subject} grade ${gradeLevel} on the topic "${topic}". ${customPrompt ? `Additional instructions: ${customPrompt}` : ''}. Format as JSON array of objects with keys: text, type ("mcq" or "trueFalse"), options (array of string for mcq, or ["True", "False"]), correctAnswer (0-indexed integer for options), explanation. Return ONLY valid JSON array.`;
+      const aiResponseText = await askPuterAI(prompt, 'gpt-5.6-sol');
+      const jsonMatch = aiResponseText.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          questionsList = parsed.map((item: any, idx: number) => ({
+            id: `ai-q-puter-${Date.now()}-${idx}`,
+            text: item.text || item.question || `Question about ${topic}`,
+            type: item.type === 'trueFalse' ? 'trueFalse' : 'mcq',
+            options: item.options || (item.type === 'trueFalse' ? ['True', 'False'] : ['Option A', 'Option B', 'Option C', 'Option D']),
+            correctAnswer: typeof item.correctAnswer === 'number' ? item.correctAnswer : 0,
+            explanation: item.explanation || `Explanation for ${topic}`,
+            subject,
+            gradeLevel,
+            difficulty: difficulty as 'easy' | 'medium' | 'hard',
+            generatedAt: new Date().toISOString(),
+            status: 'pending' as const,
+            topic,
+            confidenceScore: Math.floor(Math.random() * 10 + 90),
+          }));
+        }
       }
-    } else {
-      questionsList = generateDynamicQuestions(topic, subject, customPrompt, exampleQuestion, documentText, difficulty, quantity);
+    } catch (e) {
+      console.warn("Puter AI question synthesis fallback:", e);
+    }
+
+    if (questionsList.length === 0) {
+      const databaseQuestions = getQuestionsByTopic(topic, subject);
+      if (databaseQuestions.length > 0) {
+        questionsList = databaseQuestions.map((q, idx) => ({
+          id: `ai-q-${Date.now()}-${idx}`,
+          text: q.text,
+          type: q.type,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation,
+          subject,
+          gradeLevel,
+          difficulty: difficulty as 'easy' | 'medium' | 'hard',
+          generatedAt: new Date().toISOString(),
+          status: 'pending' as const,
+          topic: q.topic,
+          confidenceScore: Math.floor(Math.random() * 10 + 90),
+        }));
+
+        if (questionsList.length < quantity) {
+          const remaining = quantity - questionsList.length;
+          const dynamicList = generateDynamicQuestions(topic, subject, customPrompt, exampleQuestion, documentText, difficulty, remaining);
+          questionsList = [...questionsList, ...dynamicList];
+        } else if (questionsList.length > quantity) {
+          questionsList = questionsList.slice(0, quantity);
+        }
+      } else {
+        questionsList = generateDynamicQuestions(topic, subject, customPrompt, exampleQuestion, documentText, difficulty, quantity);
+      }
     }
 
     setGeneratedQuestions(prev => [...questionsList, ...prev]);

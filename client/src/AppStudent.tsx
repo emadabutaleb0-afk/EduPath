@@ -5,20 +5,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 
-// Public
+// Public & Student pages
 import LandingPage from "./pages/LandingPage";
-import NotFound from "./pages/NotFound";
-
-// Teacher (Admin) pages
-import TeacherDashboard from "./pages/teacher/Dashboard";
-import TeacherCurriculum from "./pages/teacher/Curriculum";
-import TeacherTests from "./pages/teacher/Tests";
-import TeacherStudents from "./pages/teacher/Students";
-import TeacherPayments from "./pages/teacher/Payments";
-import TeacherAnalytics from "./pages/teacher/Analytics";
-import TeacherSettings from "./pages/teacher/Settings";
-
-// Student pages
 import StudentHome from "./pages/student/Home";
 import StudentLesson from "./pages/student/Lesson";
 import StudentTest from "./pages/student/TakeTest";
@@ -27,22 +15,14 @@ import StudentWallet from "./pages/student/Wallet";
 import StudentLivePass from "./pages/student/LivePass";
 import RegisterPage from "./pages/RegisterPage";
 import SignInPage from "./pages/SignInPage";
+import NotFound from "./pages/NotFound";
 
-function Router() {
+function StudentRouter() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
 
-      {/* Teacher routes */}
-      <Route path="/teacher" component={TeacherDashboard} />
-      <Route path="/teacher/curriculum" component={TeacherCurriculum} />
-      <Route path="/teacher/tests" component={TeacherTests} />
-      <Route path="/teacher/students" component={TeacherStudents} />
-      <Route path="/teacher/payments" component={TeacherPayments} />
-      <Route path="/teacher/analytics" component={TeacherAnalytics} />
-      <Route path="/teacher/settings" component={TeacherSettings} />
-
-      {/* Student routes */}
+      {/* Student portal routes */}
       <Route path="/student" component={StudentHome} />
       <Route path="/student/lesson/:id" component={StudentLesson} />
       <Route path="/student/test/:id" component={StudentTest} />
@@ -50,7 +30,7 @@ function Router() {
       <Route path="/student/wallet" component={StudentWallet} />
       <Route path="/student/live/:id" component={StudentLivePass} />
 
-      {/* Registration & Auth */}
+      {/* Authentication */}
       <Route path="/register" component={RegisterPage} />
       <Route path="/signin" component={SignInPage} />
 
@@ -59,19 +39,17 @@ function Router() {
   );
 }
 
-function App() {
+export default function AppStudent() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light" switchable={true}>
         <AuthProvider>
           <TooltipProvider>
             <Toaster position="top-center" richColors />
-            <Router />
+            <StudentRouter />
           </TooltipProvider>
         </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
 }
-
-export default App;
