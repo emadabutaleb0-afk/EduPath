@@ -406,7 +406,7 @@ export async function getDBStatus(): Promise<any> {
 
 // Helper: Derive a student's active subjects from enrollments (single source of truth)
 export function getStudentSubjectsFromEnrollments(studentId: string): string[] {
-  return [...new Set(mockEnrollments.filter(e => e.studentId === studentId).map(e => e.subject))];
+  return Array.from(new Set(mockEnrollments.filter(e => e.studentId === studentId).map(e => e.subject)));
 }
 
 export async function enrollStudent(studentId: string, teacherId: string, subject: string): Promise<boolean> {

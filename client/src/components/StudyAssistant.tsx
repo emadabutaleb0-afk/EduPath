@@ -49,31 +49,40 @@ export function StudyAssistant() {
     setInput('');
     setIsLoading(true);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    let assistantContent = '';
 
-    // Generate response based on matched topic or random fallback
-    const lowerText = trimmedText.toLowerCase();
-    let matchedResponse = mockStudyAssistantResponses[0]; // fallback default
+    try {
+      const { askPuterAI } = await import('@/lib/puterAI');
+      const prompt = `You are EduPath's friendly, encouraging AI Study Assistant for students. Answer this student's question clearly, concisely, and step-by-step in an approachable educational tone: "${trimmedText}"`;
+      assistantContent = await askPuterAI(prompt, 'gpt-4o-mini');
+    } catch (e) {
+      console.warn("Puter AI Study Assistant fallback to curated response:", e);
+    }
 
-    if (lowerText.includes('photosynthesis')) {
-      matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Photosynthesis') || matchedResponse;
-    } else if (lowerText.includes('fraction')) {
-      matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Fractions') || matchedResponse;
-    } else if (lowerText.includes('essay')) {
-      matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Essay Writing') || matchedResponse;
-    } else if (lowerText.includes('algebra') || lowerText.includes('equation')) {
-      matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Algebra') || matchedResponse;
-    } else {
-      // Pick a random study assistant response from the database
-      const randomIdx = Math.floor(Math.random() * mockStudyAssistantResponses.length);
-      matchedResponse = mockStudyAssistantResponses[randomIdx];
+    if (!assistantContent) {
+      // Generate response based on matched topic or random fallback
+      const lowerText = trimmedText.toLowerCase();
+      let matchedResponse = mockStudyAssistantResponses[0]; // fallback default
+
+      if (lowerText.includes('photosynthesis')) {
+        matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Photosynthesis') || matchedResponse;
+      } else if (lowerText.includes('fraction')) {
+        matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Fractions') || matchedResponse;
+      } else if (lowerText.includes('essay')) {
+        matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Essay Writing') || matchedResponse;
+      } else if (lowerText.includes('algebra') || lowerText.includes('equation')) {
+        matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Algebra') || matchedResponse;
+      } else {
+        const randomIdx = Math.floor(Math.random() * mockStudyAssistantResponses.length);
+        matchedResponse = mockStudyAssistantResponses[randomIdx];
+      }
+      assistantContent = matchedResponse.response;
     }
 
     const assistantMessage: Message = {
       id: (Date.now() + 1).toString(),
       type: 'assistant',
-      content: matchedResponse.response,
+      content: assistantContent,
       timestamp: new Date(),
     };
 
