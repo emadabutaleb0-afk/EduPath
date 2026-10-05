@@ -137,7 +137,6 @@ export default function UserProfile() {
   const [, setLocation] = useLocation();
   const [isEditing, setIsEditing] = useState(false);
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-  const [studentSearchQuery, setStudentSearchQuery] = useState('');
   
   // Decoupled role-specific form state initialization
   const [formData, setFormData] = useState(() => {

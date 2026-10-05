@@ -1,24 +1,40 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en">
+
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>EduPath - منصة التعليم للطلاب</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>EduPath | AI-Powered Personalized Learning & Adaptive Assessment Platform</title>
+    <meta name="description" content="EduPath is a state-of-the-art educational platform offering adaptive testing, real-time AI performance insights, and custom curriculum tools for students, teachers, and parents." />
+    <meta name="keywords" content="adaptive learning, AI education, student assessment, personalized learning path, parent dashboard, teacher tools, educational technology" />
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="EduPath | AI-Powered Personalized Learning & Adaptive Assessment Platform" />
+    <meta property="og:description" content="Empowering students through tailored learning paths, real-time AI analytics, and collaborative dashboards for teachers and parents." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://js.puter.com/v2/"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet" />
   </head>
+
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/mainStudent.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"
-    ></script>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function() {
+        const endpoint = "%VITE_ANALYTICS_ENDPOINT%";
+        const websiteId = "%VITE_ANALYTICS_WEBSITE_ID%";
+        if (endpoint && !endpoint.startsWith('%') && websiteId && !websiteId.startsWith('%')) {
+          const script = document.createElement('script');
+          script.defer = true;
+          script.src = endpoint + '/umami';
+          script.setAttribute('data-website-id', websiteId);
+          document.body.appendChild(script);
+        }
+      })();
+    </script>
   </body>
+
 </html>
