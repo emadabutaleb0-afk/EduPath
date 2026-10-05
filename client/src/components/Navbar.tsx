@@ -90,12 +90,20 @@ export function Navbar() {
         {/* Center: Navigation Links */}
         <div className="hidden md:flex items-center gap-6">
           {!user && (
-            <button
-              onClick={() => handleNavigation('/teachers')}
-              className={navLinkClass('/teachers')}
-            >
-              Teachers
-            </button>
+            <>
+              <button
+                onClick={() => handleNavigation('/teachers')}
+                className={navLinkClass('/teachers')}
+              >
+                Teachers
+              </button>
+              <button
+                onClick={() => handleNavigation('/teacher-invite')}
+                className={navLinkClass('/teacher-invite')}
+              >
+                Teacher Invite ✨
+              </button>
+            </>
           )}
 
           {user && (

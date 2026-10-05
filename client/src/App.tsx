@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import TeachersList from "./pages/TeachersList";
+import TeacherInvitePoster from "./pages/TeacherInvitePoster";
 import StudentDashboard from "./pages/StudentDashboard";
 import Tests from "./pages/Tests";
 import TestTaking from "./pages/TestTaking";
@@ -84,6 +85,8 @@ function Router() {
       <Route path="/teachers" component={TeachersList} />
       <Route path="/test-enhanced/:id" component={TestTakingEnhanced} />
       <Route path="/placement-report" component={PlacementReport} />
+      <Route path="/teacher-invite" component={TeacherInvitePoster} />
+      <Route path="/poster" component={TeacherInvitePoster} />
 
       {/* Protected Student Routes */}
       <ProtectedRoute path="/student-dashboard" component={StudentDashboard} allowedRoles={['student']} />
