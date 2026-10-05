@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Mail, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
+import { Download, Mail, TrendingUp, AlertCircle, CheckCircle, Sparkles, Loader2 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { toast } from 'sonner';
 import {
@@ -31,13 +31,14 @@ interface Report {
 export default function AIParentReportSummarizer() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [showPreferencesDialog, setShowPreferencesDialog] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   
   // Preferences States
   const [weeklyReports, setWeeklyReports] = useState(true);
   const [monthlyReports, setMonthlyReports] = useState(true);
   const [alertNotifications, setAlertNotifications] = useState(true);
 
-  const reports: Report[] = [
+  const initialReports: Report[] = [
     {
       id: 'report-1',
       period: 'Week of May 5-11, 2026',
@@ -90,7 +91,58 @@ export default function AIParentReportSummarizer() {
     },
   ];
 
-  const currentReport = selectedReport || reports[0];
+  const [reportsList, setReportsList] = useState<Report[]>(initialReports);
+  const currentReport = selectedReport || reportsList[0];
+
+  const handleGenerateNewReport = async () => {
+    setIsGenerating(true);
+    let newReport: Report = {
+      id: `report-${Date.now()}`,
+      period: `Week of ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, 2026`,
+      studentName: 'Alex Johnson',
+      summary: 'Alex demonstrated strong consistency this week across all curriculum modules. Accuracy rates in practice assessments showed steady upward momentum, with noticeable enthusiasm in interactive lessons.',
+      highlights: [
+        'Maintained daily study streak with 100% on-time practice completion',
+        'Achieved 82% mastery across core concept quizzes',
+        'Demonstrated rapid problem-solving on intermediate difficulty tests',
+      ],
+      areasOfConcern: [
+        'Could benefit from reviewing complex word problem interpretations',
+        'Pacing slightly quickened on timed tests',
+      ],
+      suggestions: [
+        'Practice 2-3 focused word problems using the AI Study Assistant',
+        'Take an adaptive practice quiz before the upcoming unit checkpoint',
+      ],
+      generatedAt: new Date().toISOString(),
+    };
+
+    try {
+      const { askPuterAI } = await import('@/lib/puterAI');
+      const prompt = `You are EduPath's AI Parent Report Generator. Write a comprehensive, encouraging, and clear learning progress report for parent review regarding 8th-grade student Alex Johnson. Return a valid JSON object with fields: "summary" (2-3 paragraph sentences overview), "highlights" (array of 3-4 bullet strings), "areasOfConcern" (array of 2-3 bullet strings), "suggestions" (array of 2-3 actionable advice strings). Return ONLY raw JSON object.`;
+      const aiResponse = await askPuterAI(prompt, 'gpt-4o-mini');
+      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (parsed.summary && parsed.highlights) {
+          newReport = {
+            ...newReport,
+            summary: parsed.summary,
+            highlights: parsed.highlights,
+            areasOfConcern: parsed.areasOfConcern || newReport.areasOfConcern,
+            suggestions: parsed.suggestions || newReport.suggestions,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn("Puter AI parent report synthesis fallback:", e);
+    }
+
+    setReportsList(prev => [newReport, ...prev]);
+    setSelectedReport(newReport);
+    setIsGenerating(false);
+    toast.success('Generated fresh AI Progress Summary Report! ✨');
+  };
 
   const handleExportPDF = () => {
     window.print();
@@ -124,11 +176,24 @@ export default function AIParentReportSummarizer() {
           {/* Sidebar - Report List */}
           <div className="lg:col-span-1">
             <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="text-base">Reports</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center justify-between">
+                  <span>Reports</span>
+                  <Badge variant="outline" className="text-xs">Live AI</Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {reports.map(report => (
+                <Button 
+                  onClick={handleGenerateNewReport} 
+                  disabled={isGenerating} 
+                  className="w-full gap-2 mb-3 bg-primary text-primary-foreground shadow-sm"
+                  size="sm"
+                >
+                  {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  {isGenerating ? 'Synthesizing AI Report...' : 'Generate New AI Report'}
+                </Button>
+
+                {reportsList.map(report => (
                   <button
                     key={report.id}
                     onClick={() => setSelectedReport(report)}

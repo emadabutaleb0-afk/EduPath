@@ -2,11 +2,19 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertTriangle, CheckCircle, Eye } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Eye, Sparkles, Loader2, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/contexts/AuthContext';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface FlaggedAttempt {
   id: string;
@@ -179,8 +187,35 @@ export default function AICheatingDetection() {
     }
   };
 
-  const handleReviewDetails = (attempt: FlaggedAttempt) => {
-    toast.info(`Anomalies for ${attempt.studentName}: ${attempt.flags.join(', ')}`);
+  const [selectedAttemptForModal, setSelectedAttemptForModal] = useState<FlaggedAttempt | null>(null);
+  const [aiForensicAnalysis, setAiForensicAnalysis] = useState<string>('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleReviewDetails = async (attempt: FlaggedAttempt) => {
+    setSelectedAttemptForModal(attempt);
+    setIsAnalyzing(true);
+    setAiForensicAnalysis('');
+
+    try {
+      const { askPuterAI } = await import('@/lib/puterAI');
+      const prompt = `You are EduPath's Academic Integrity AI Forensics Auditor. Analyze this flagged student test session:
+Student: ${attempt.studentName}
+Test: ${attempt.testName}
+Risk Score: ${attempt.confidenceScore}%
+Detected Flags: ${attempt.flags.join(', ')}
+
+Provide a structured forensic report:
+1. Pattern Analysis: Evaluate the suspicious anomalies.
+2. Probability Assessment: Likelihood of unauthorized assistance vs rapid guessing.
+3. Proctor Recommendation: Next actionable steps for the educator.`;
+      const analysis = await askPuterAI(prompt, 'gpt-4o-mini');
+      setAiForensicAnalysis(analysis);
+    } catch (e) {
+      console.warn("Puter AI forensic analysis fallback:", e);
+      setAiForensicAnalysis(`Forensic Evaluation for ${attempt.studentName}: Anomaly analysis indicates elevated risk (${attempt.confidenceScore}%) based on flags: ${attempt.flags.join(', ')}. Recommended action: Review question-by-question response timestamps and conduct a brief concept check interview.`);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
@@ -422,6 +457,75 @@ export default function AICheatingDetection() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Forensic Analysis Dialog */}
+        <Dialog open={!!selectedAttemptForModal} onOpenChange={(open) => !open && setSelectedAttemptForModal(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-lg">
+                <ShieldAlert className="w-5 h-5 text-amber-500" />
+                AI Forensic Investigation: {selectedAttemptForModal?.studentName}
+              </DialogTitle>
+              <DialogDescription>
+                {selectedAttemptForModal?.testName} • Recorded {selectedAttemptForModal?.date}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-2">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 border border-border">
+                <span className="text-sm font-medium">Calculated Risk Index</span>
+                <span className="font-bold text-base px-3 py-1 rounded bg-amber-500/10 text-amber-600 border border-amber-500/30">
+                  {selectedAttemptForModal?.confidenceScore}% Suspicion Level
+                </span>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">Detected Anomaly Flags</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedAttemptForModal?.flags.map((flag, idx) => (
+                    <Badge key={idx} variant="secondary" className="text-xs py-1">
+                      {flag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-border p-4 bg-card shadow-inner">
+                <div className="flex items-center gap-2 mb-2 text-primary font-semibold text-sm">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Puter AI Deep Forensic Analysis</span>
+                </div>
+                {isAnalyzing ? (
+                  <div className="flex items-center gap-3 py-6 justify-center text-muted-foreground text-sm">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Analyzing timing graphs, response sequences, and behavior patterns...</span>
+                  </div>
+                ) : (
+                  <p className="text-sm text-foreground/90 whitespace-pre-line leading-relaxed">
+                    {aiForensicAnalysis}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => setSelectedAttemptForModal(null)}>
+                Close
+              </Button>
+              {selectedAttemptForModal && selectedAttemptForModal.status !== 'cleared' && (
+                <Button 
+                  onClick={() => {
+                    handleUpdateStatus(selectedAttemptForModal.id, 'cleared');
+                    setSelectedAttemptForModal(null);
+                  }}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Clear Flag
+                </Button>
+              )}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

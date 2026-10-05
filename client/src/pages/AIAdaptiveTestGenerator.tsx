@@ -16,11 +16,7 @@ export default function AIAdaptiveTestGenerator() {
     setIsGenerating(true);
     setShowResult(false);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Mock generate adaptive test
-    const newTest = {
+    let generatedAdaptiveTest = {
       id: `adaptive-${Date.now()}`,
       studentId: 'student-1',
       focusAreas: ['Algebra', 'Word Problems', 'Equations', 'Geometry'],
@@ -35,7 +31,30 @@ export default function AIAdaptiveTestGenerator() {
       ],
     };
 
-    setGeneratedTest(newTest);
+    try {
+      const { askPuterAI } = await import('@/lib/puterAI');
+      const prompt = `You are EduPath's AI Adaptive Testing Engine. Analyze a student who needs targeted practice based on recent test data. Return a valid JSON object with fields: "focusAreas" (array of 4 specific topics), "difficulty" ("easy" | "medium" | "hard"), "questionCount" (integer between 15 and 25), "estimatedDuration" (minutes, integer), "reasonForSelection" (array of 4 bullet points explaining why the AI chose this configuration). Output ONLY raw JSON object.`;
+      const aiResponse = await askPuterAI(prompt, 'gpt-4o-mini');
+      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (parsed.focusAreas && parsed.reasonForSelection) {
+          generatedAdaptiveTest = {
+            id: `adaptive-puter-${Date.now()}`,
+            studentId: 'student-1',
+            focusAreas: parsed.focusAreas,
+            difficulty: parsed.difficulty || 'medium',
+            questionCount: parsed.questionCount || 20,
+            estimatedDuration: parsed.estimatedDuration || 35,
+            reasonForSelection: parsed.reasonForSelection,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn("Puter AI adaptive calibration fallback used:", e);
+    }
+
+    setGeneratedTest(generatedAdaptiveTest);
     setIsGenerating(false);
     setShowResult(true);
   };
