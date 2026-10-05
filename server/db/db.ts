@@ -13,6 +13,7 @@ if (!connectionString) {
 
 export const pool = new Pool({
   connectionString,
+  connectionTimeoutMillis: 2000,
 });
 
 // Prevent background connection errors from causing unhandled process crashes
