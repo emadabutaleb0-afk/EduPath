@@ -101,7 +101,13 @@ export function Navbar() {
                 onClick={() => handleNavigation('/teacher-invite')}
                 className={navLinkClass('/teacher-invite')}
               >
-                Teacher Invite ✨
+                Teacher Poster ✨
+              </button>
+              <button
+                onClick={() => handleNavigation('/pitch-deck')}
+                className={navLinkClass('/pitch-deck')}
+              >
+                Pitch Deck 📑
               </button>
             </>
           )}
@@ -486,6 +492,20 @@ export function Navbar() {
                 onClick={() => handleNavigation('/teachers')}
               >
                 Teachers
+              </Button>
+              <Button
+                variant={isActive('/teacher-invite') ? 'default' : 'ghost'}
+                className="w-full justify-start font-medium rounded-xl"
+                onClick={() => handleNavigation('/teacher-invite')}
+              >
+                Teacher Poster ✨
+              </Button>
+              <Button
+                variant={isActive('/pitch-deck') ? 'default' : 'ghost'}
+                className="w-full justify-start font-medium rounded-xl"
+                onClick={() => handleNavigation('/pitch-deck')}
+              >
+                Pitch Deck 📑
               </Button>
               <Button
                 variant="ghost"

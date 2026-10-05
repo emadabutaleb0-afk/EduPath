@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import TeachersList from "./pages/TeachersList";
 import TeacherInvitePoster from "./pages/TeacherInvitePoster";
+import TeacherPitchDeck from "./pages/TeacherPitchDeck";
 import StudentDashboard from "./pages/StudentDashboard";
 import Tests from "./pages/Tests";
 import TestTaking from "./pages/TestTaking";
@@ -87,6 +88,8 @@ function Router() {
       <Route path="/placement-report" component={PlacementReport} />
       <Route path="/teacher-invite" component={TeacherInvitePoster} />
       <Route path="/poster" component={TeacherInvitePoster} />
+      <Route path="/pitch-deck" component={TeacherPitchDeck} />
+      <Route path="/deck" component={TeacherPitchDeck} />
 
       {/* Protected Student Routes */}
       <ProtectedRoute path="/student-dashboard" component={StudentDashboard} allowedRoles={['student']} />
