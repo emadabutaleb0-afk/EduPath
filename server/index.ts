@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { apiRouter } from "./api.js";
 import { initializeDatabase } from "./db/init.js";
+import { securityHeaders } from "./auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +15,24 @@ async function startServer() {
 
   const app = express();
   const server = createServer(app);
+
+  // Security Headers
+  app.use(securityHeaders);
+
+  // Structured Request Logging Middleware
+  app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+      const duration = Date.now() - start;
+      const logLine = `${new Date().toISOString()} [${req.method}] ${req.originalUrl || req.url} -> ${res.statusCode} (${duration}ms)`;
+      if (res.statusCode >= 400) {
+        console.warn(`⚠️ ${logLine}`);
+      } else {
+        console.log(`ℹ️ ${logLine}`);
+      }
+    });
+    next();
+  });
 
   // Enable JSON parsing and mount API Router
   app.use(express.json({ limit: "20mb" }));
@@ -36,7 +55,7 @@ async function startServer() {
   const port = process.env.PORT || 3000;
 
   server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+    console.log(`🚀 EduPath Secure Server running on http://localhost:${port}/ (Environment: ${process.env.NODE_ENV || 'development'})`);
   });
 }
 

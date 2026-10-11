@@ -82,13 +82,13 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/teachers" component={TeachersList} />
-      <Route path="/test-enhanced/:id" component={TestTakingEnhanced} />
       <Route path="/placement-report" component={PlacementReport} />
 
       {/* Protected Student Routes */}
       <ProtectedRoute path="/student-dashboard" component={StudentDashboard} allowedRoles={['student']} />
       <ProtectedRoute path="/tests" component={Tests} allowedRoles={['student']} />
-      <ProtectedRoute path="/test/:id" component={TestTaking} allowedRoles={['student']} />
+      <ProtectedRoute path="/test/:id" component={TestTakingEnhanced} allowedRoles={['student']} />
+      <ProtectedRoute path="/test-enhanced/:id" component={TestTakingEnhanced} allowedRoles={['student']} />
       <ProtectedRoute path="/results/:id" component={Results} allowedRoles={['student']} />
       <ProtectedRoute path="/ai/adaptive-test" component={AIAdaptiveTestGenerator} allowedRoles={['student']} />
       <ProtectedRoute path="/settings" component={StudentSettings} allowedRoles={['student']} />

@@ -49,12 +49,34 @@ export function StudyAssistant() {
     setInput('');
     setIsLoading(true);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    try {
+      const token = localStorage.getItem('edupath_token');
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ message: trimmedText })
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.response) {
+        setMessages(prev => [...prev, {
+          id: (Date.now() + 1).toString(),
+          type: 'assistant',
+          content: data.response,
+          timestamp: new Date()
+        }]);
+        setIsLoading(false);
+        return;
+      }
+    } catch (e) {
+      console.warn('AI proxy network notice, falling back to local curriculum guide:', e);
+    }
 
-    // Generate response based on matched topic or random fallback
+    // Fallback response based on matched topic
     const lowerText = trimmedText.toLowerCase();
-    let matchedResponse = mockStudyAssistantResponses[0]; // fallback default
+    let matchedResponse = mockStudyAssistantResponses[0];
 
     if (lowerText.includes('photosynthesis')) {
       matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Photosynthesis') || matchedResponse;
@@ -65,7 +87,6 @@ export function StudyAssistant() {
     } else if (lowerText.includes('algebra') || lowerText.includes('equation')) {
       matchedResponse = mockStudyAssistantResponses.find(r => r.topic === 'Algebra') || matchedResponse;
     } else {
-      // Pick a random study assistant response from the database
       const randomIdx = Math.floor(Math.random() * mockStudyAssistantResponses.length);
       matchedResponse = mockStudyAssistantResponses[randomIdx];
     }

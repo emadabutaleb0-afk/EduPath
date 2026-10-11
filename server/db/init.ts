@@ -1,11 +1,7 @@
 import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { pool, setDBMode } from './db.js';
 import { seedDatabase } from './seed.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getSchemaSqlPath } from '../paths.js';
 
 let isInitialized = false;
 
@@ -39,8 +35,8 @@ export async function initializeDatabase() {
     if (!tablesExist) {
       console.log('📂 Users table does not exist. Initializing schema tables...');
       
-      // Read schema file
-      const schemaPath = path.resolve(__dirname, 'schema.sql');
+      // Read schema file from reliable path helper
+      const schemaPath = getSchemaSqlPath();
       if (!fs.existsSync(schemaPath)) {
         throw new Error(`schema.sql not found at path: ${schemaPath}`);
       }
@@ -56,36 +52,54 @@ export async function initializeDatabase() {
       await seedDatabase(client);
       console.log('🎉 PostgreSQL Database fully initialized and seeded!');
     } else {
-      console.log('ℹ️ PostgreSQL database tables are already initialized. Skipping schema setup.');
+      console.log('ℹ️ PostgreSQL database tables are already initialized. Running safe incremental migrations...');
       
-      // Ensure student_teacher_enrollments table exists
-      const checkEnrollmentsQuery = `
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'student_teacher_enrollments'
+      // 1. Ensure password_hash exists on users
+      await client.query(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
+      `);
+
+      // 2. Ensure platform_customizations table exists
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS platform_customizations (
+            key VARCHAR(100) PRIMARY KEY,
+            value TEXT NOT NULL
         );
-      `;
-      const enrollmentsRes = await client.query(checkEnrollmentsQuery);
-      if (!enrollmentsRes.rows[0].exists) {
-        console.log('📂 student_teacher_enrollments table does not exist. Creating it...');
+      `);
+
+      // 3. Ensure student_teacher_enrollments table exists
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS student_teacher_enrollments (
+            student_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
+            teacher_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
+            subject VARCHAR(255) NOT NULL,
+            enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY (student_id, teacher_id, subject)
+        );
+        CREATE INDEX IF NOT EXISTS idx_ste_student ON student_teacher_enrollments(student_id);
+      `);
+
+      // 4. Ensure cheating_flags table allows confirmed and dismissed statuses
+      try {
         await client.query(`
-          CREATE TABLE student_teacher_enrollments (
-              student_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
-              teacher_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
-              subject VARCHAR(255) NOT NULL,
-              enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-              PRIMARY KEY (student_id, teacher_id, subject)
-          );
-          CREATE INDEX idx_ste_student ON student_teacher_enrollments(student_id);
+          ALTER TABLE cheating_flags DROP CONSTRAINT IF EXISTS cheating_flags_status_check;
+          ALTER TABLE cheating_flags ADD CONSTRAINT cheating_flags_status_check 
+            CHECK (status IN ('pending', 'reviewed', 'cleared', 'confirmed', 'dismissed'));
         `);
-        console.log('✅ student_teacher_enrollments table created.');
+      } catch (err: any) {
+        console.warn('Cheating flags status constraint update notice:', err.message);
       }
+
+      console.log('✅ Incremental database migrations verified.');
     }
   } catch (error: any) {
     console.error('❌ Failed to connect to or initialize PostgreSQL database:', error.message);
-    console.warn('⚠️ Switching system driver back to simulated SQLite Local Mode for safety!');
-    setDBMode('mock');
+    if (process.env.NODE_ENV === 'production') {
+      console.error('🚨 FATAL: PostgreSQL connection failed in production mode.');
+    } else {
+      console.warn('⚠️ Switching system driver back to local simulated JSON mode for development safety.');
+      setDBMode('mock');
+    }
   } finally {
     if (client) {
       client.release();

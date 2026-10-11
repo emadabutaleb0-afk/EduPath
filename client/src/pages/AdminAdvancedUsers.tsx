@@ -19,7 +19,7 @@ import {
 import { toast } from 'sonner';
 
 export default function AdminAdvancedUsers() {
-  const { user } = useAuth();
+  const { user, deleteUser } = useAuth();
   const [, navigate] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all-roles');
@@ -65,8 +65,14 @@ export default function AdminAdvancedUsers() {
     ));
   };
 
-  const handleDeleteUser = (userId: string) => {
-    setUsers(users.filter(u => u.id !== userId));
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      await deleteUser(userId);
+      setUsers(users.filter(u => u.id !== userId));
+      toast.success('User deleted successfully.');
+    } catch {
+      toast.error('Failed to delete user.');
+    }
   };
 
   const handleBulkImport = (e: React.ChangeEvent<HTMLInputElement>) => {

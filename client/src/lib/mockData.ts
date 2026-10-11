@@ -1225,7 +1225,7 @@ export interface CheatDetectionFlag {
   confidenceScore: number; // 0-100
   reasoning: string;
   flaggedAt: string;
-  status: 'pending' | 'reviewed' | 'confirmed' | 'dismissed';
+  status: 'pending' | 'reviewed' | 'cleared' | 'confirmed' | 'dismissed';
 }
 
 export interface DifficultyCalibration {

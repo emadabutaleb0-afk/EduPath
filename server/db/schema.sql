@@ -1,6 +1,7 @@
 -- PostgreSQL Schema for EduPath Platform
 
 -- Drop tables in reverse dependency order
+DROP TABLE IF EXISTS platform_customizations CASCADE;
 DROP TABLE IF EXISTS student_teacher_enrollments CASCADE;
 DROP TABLE IF EXISTS user_activities CASCADE;
 DROP TABLE IF EXISTS content_versions CASCADE;
@@ -19,20 +20,21 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS academic_registries CASCADE;
 
 -- 0. Academic Registries Table (For Subjects & Grades)
-CREATE TABLE academic_registries (
+CREATE TABLE IF NOT EXISTS academic_registries (
     id SERIAL PRIMARY KEY,
     type VARCHAR(50) NOT NULL CHECK (type IN ('subject', 'grade')),
     value VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- Index for registry type lookup
-CREATE INDEX idx_ar_type ON academic_registries(type);
+CREATE INDEX IF NOT EXISTS idx_ar_type ON academic_registries(type);
 
 -- 1. Users Table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255),
     role VARCHAR(20) NOT NULL CHECK (role IN ('student', 'parent', 'admin', 'teacher')),
     grade_level INT,
     profile_image TEXT,
@@ -160,7 +162,7 @@ CREATE TABLE cheating_flags (
     date VARCHAR(50) NOT NULL,
     confidence_score INT NOT NULL,
     flags JSONB NOT NULL, -- Array of string warnings
-    status VARCHAR(20) DEFAULT 'pending' NOT NULL CHECK (status IN ('pending', 'reviewed', 'cleared'))
+    status VARCHAR(20) DEFAULT 'pending' NOT NULL CHECK (status IN ('pending', 'reviewed', 'cleared', 'confirmed', 'dismissed'))
 );
 
 -- Index for cheats risk filter
@@ -231,7 +233,7 @@ CREATE TABLE lesson_materials (
 CREATE INDEX idx_materials_lesson ON lesson_materials(lesson_id);
 
 -- 15. Platform Customizations Table (For website copy, text, images, styles)
-CREATE TABLE platform_customizations (
+CREATE TABLE IF NOT EXISTS platform_customizations (
     key VARCHAR(100) PRIMARY KEY,
     value TEXT NOT NULL
 );

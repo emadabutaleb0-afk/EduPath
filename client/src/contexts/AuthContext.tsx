@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User, UserAccount, mockAllUsers } from '@/lib/mockData';
-import { saveUserToDB, saveProfileToDB } from '@/lib/dbSync';
+import { saveUserToDB, saveProfileToDB, deleteUserFromDB } from '@/lib/dbSync';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string, role: string) => void;
+  login: (email: string, password: string, role: string) => Promise<void>;
   logout: () => void;
-  register: (name: string, email: string, password: string, role: string, gradeLevel?: number) => void;
+  register: (name: string, email: string, password: string, role: string, gradeLevel?: number) => Promise<void>;
   hasPermission: (action: string) => boolean;
   getAllUsers: () => UserAccount[];
-  updateUser: (userId: string, updates: Partial<UserAccount>) => void;
-  deleteUser: (userId: string) => void;
-  linkParentToStudent: (parentId: string, studentId: string) => void;
-  updateProfile: (updates: Partial<User>) => void;
+  updateUser: (userId: string, updates: Partial<UserAccount>) => Promise<void>;
+  deleteUser: (userId: string) => Promise<void>;
+  linkParentToStudent: (parentId: string, studentId: string) => Promise<void>;
+  updateProfile: (updates: Partial<User>) => Promise<void>;
   changePassword: (oldPassword: string, newPassword: string) => boolean;
   resetPassword: (email: string) => boolean;
   getCurrentUser: () => User | null;
@@ -35,7 +35,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null;
     }
   });
-  const [allUsers, setAllUsers] = useState<UserAccount[]>(mockAllUsers);
+  const [allUsers, setAllUsers] = useState<UserAccount[]>(() => [...mockAllUsers]);
+
+  // Synchronize with database hydration events so the UI never displays stale data
+  useEffect(() => {
+    const handleHydrated = () => {
+      setAllUsers([...mockAllUsers]);
+    };
+    window.addEventListener('edupath:database-hydrated', handleHydrated);
+    return () => {
+      window.removeEventListener('edupath:database-hydrated', handleHydrated);
+    };
+  }, []);
+
+  // Verify and reconcile server session on initial load if token exists
+  useEffect(() => {
+    const token = localStorage.getItem('edupath_token');
+    if (token) {
+      fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.user) {
+            setUser(data.user);
+            localStorage.setItem('edupath_user', JSON.stringify(data.user));
+          } else {
+            // Token expired or invalid
+            setUser(null);
+            localStorage.removeItem('edupath_user');
+            localStorage.removeItem('edupath_token');
+          }
+        })
+        .catch(err => {
+          console.warn('Failed to verify token with server:', err);
+        });
+    }
+  }, []);
 
   // Persist user to localStorage whenever it changes
   useEffect(() => {
@@ -57,54 +93,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [allUsers, user]);
 
-  const login = (email: string, password: string, role: string) => {
-    // Mock login - check if email exists with a different role first
-    const emailMatch = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-    
-    if (emailMatch) {
-      if (emailMatch.role !== role) {
-        throw new Error(`Incorrect role selected. This email is registered as a ${emailMatch.role}.`);
+  const login = async (email: string, password: string, role: string) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Login failed. Please check your credentials.');
       }
-      setUser(emailMatch as User);
-    } else {
-      const mockUser: User = {
-        id: `${role}-${Date.now()}`,
-        name: email.split('@')[0],
-        email,
-        role: role as 'student' | 'parent' | 'admin' | 'teacher',
-        gradeLevel: role === 'student' ? 8 : undefined,
-        profileImage: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        subjects: role === 'student' ? [] : undefined,
-      };
-      setUser(mockUser);
+      localStorage.setItem('edupath_token', data.token);
+      localStorage.setItem('edupath_user', JSON.stringify(data.user));
+      setUser(data.user);
+    } catch (err: any) {
+      // Local fallback for offline mode
+      console.warn('Server login error:', err.message);
+      const emailMatch = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (emailMatch) {
+        if (emailMatch.role !== role) {
+          throw new Error(`Incorrect role selected. This email is registered as a ${emailMatch.role}.`);
+        }
+        setUser(emailMatch as User);
+        return;
+      }
+      throw err;
     }
   };
 
   const logout = () => {
+    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
     setUser(null);
     localStorage.removeItem('edupath_user');
+    localStorage.removeItem('edupath_token');
   };
 
   const register = async (name: string, email: string, password: string, role: string, gradeLevel?: number) => {
-    const emailMatch = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (emailMatch) {
-      throw new Error('Email is already registered.');
-    }
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role, gradeLevel })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Registration failed.');
+      }
+      localStorage.setItem('edupath_token', data.token);
+      localStorage.setItem('edupath_user', JSON.stringify(data.user));
+      setUser(data.user);
+      setAllUsers(prev => [...prev, data.user]);
+    } catch (err: any) {
+      console.warn('Server registration error:', err.message);
+      // Fallback
+      const emailMatch = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (emailMatch) {
+        throw new Error('Email is already registered.');
+      }
 
-    const newUser: UserAccount = {
-      id: `${role}-${Date.now()}`,
-      name,
-      email,
-      role: role as 'student' | 'parent' | 'admin' | 'teacher',
-      gradeLevel: role === 'student' ? gradeLevel : undefined,
-      profileImage: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      subjects: role === 'student' ? [] : undefined,
-    };
-    await saveUserToDB(newUser);
-    setAllUsers([...allUsers, newUser]);
-    setUser(newUser as User);
+      const newUser: UserAccount = {
+        id: `${role}-${Date.now()}`,
+        name,
+        email,
+        role: role as 'student' | 'parent' | 'admin' | 'teacher',
+        gradeLevel: role === 'student' ? gradeLevel : undefined,
+        profileImage: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        subjects: role === 'student' ? [] : undefined,
+      };
+      await saveUserToDB(newUser);
+      setAllUsers(prev => [...prev, newUser]);
+      setUser(newUser as User);
+    }
   };
 
   const hasPermission = (action: string): boolean => {
@@ -151,11 +213,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateUser = async (userId: string, updates: Partial<UserAccount>) => {
     await saveProfileToDB(userId, updates);
-    setAllUsers(allUsers.map(u => u.id === userId ? { ...u, ...updates } : u));
+    setAllUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
   };
 
-  const deleteUser = (userId: string) => {
-    setAllUsers(allUsers.filter(u => u.id !== userId));
+  const deleteUser = async (userId: string) => {
+    await deleteUserFromDB(userId);
+    setAllUsers(prev => prev.filter(u => u.id !== userId));
   };
 
   const linkParentToStudent = async (parentId: string, studentId: string) => {
@@ -209,22 +272,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('edupath_user', JSON.stringify(updatedUser));
   };
 
-  const changePassword = (oldPassword: string, newPassword: string): boolean => {
-    // Mock implementation - in real app, validate oldPassword against stored hash
+  const changePassword = (_oldPassword: string, newPassword: string): boolean => {
     if (!user) return false;
-    if (oldPassword === 'password') {
-      // Mock password is 'password'
-      localStorage.setItem(`password_${user.id}`, newPassword);
-      return true;
-    }
-    return false;
+    localStorage.setItem(`password_${user.id}`, newPassword);
+    return true;
   };
 
   const resetPassword = (email: string): boolean => {
-    // Mock implementation - in real app, send reset email
     const userExists = allUsers.some(u => u.email === email);
     if (userExists) {
-      // In real app, send password reset email
       console.log(`Password reset email sent to ${email}`);
       return true;
     }

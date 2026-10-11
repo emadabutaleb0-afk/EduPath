@@ -7,6 +7,8 @@ import { seedDatabase } from './seed.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { getSchemaSqlPath } from '../paths.js';
+
 async function setupDatabase() {
   console.log('🚀 Initializing PostgreSQL Database Setup...');
   
@@ -14,7 +16,7 @@ async function setupDatabase() {
   try {
     // 1. Read DDL schema file
     console.log('Reading schema.sql...');
-    const schemaPath = path.resolve(__dirname, 'schema.sql');
+    const schemaPath = getSchemaSqlPath();
     const ddlQuery = fs.readFileSync(schemaPath, 'utf8');
 
     // 2. Execute DDL queries

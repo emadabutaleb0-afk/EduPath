@@ -1,4 +1,5 @@
 import pg from 'pg';
+import { hashPassword } from '../auth.js';
 import { 
   mockAllUsers, 
   mockQuestions, 
@@ -87,15 +88,18 @@ export async function seedDatabase(client: pg.PoolClient) {
     }
 
     console.log(`Seeding ${generatedUsers.length} users in database...`);
+    const defaultPasswordHash = hashPassword('EduPath2026!');
     for (const u of generatedUsers) {
       await client.query(
-        `INSERT INTO users (id, name, email, role, grade_level, profile_image, status, created_at, subjects)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `INSERT INTO users (id, name, email, password_hash, role, grade_level, profile_image, status, created_at, subjects)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
          ON CONFLICT (id) DO UPDATE 
-         SET name = EXCLUDED.name, email = EXCLUDED.email, role = EXCLUDED.role, 
+         SET name = EXCLUDED.name, email = EXCLUDED.email, 
+             password_hash = COALESCE(users.password_hash, EXCLUDED.password_hash),
+             role = EXCLUDED.role, 
              grade_level = EXCLUDED.grade_level, profile_image = EXCLUDED.profile_image, 
              status = EXCLUDED.status, created_at = EXCLUDED.created_at, subjects = EXCLUDED.subjects`,
-        [u.id, u.name, u.email, u.role, u.gradeLevel || null, u.profileImage || null, u.status || 'active', u.createdAt, u.subjects ? JSON.stringify(u.subjects) : null]
+        [u.id, u.name, u.email, defaultPasswordHash, u.role, u.gradeLevel || null, u.profileImage || null, u.status || 'active', u.createdAt, u.subjects ? JSON.stringify(u.subjects) : null]
       );
     }
 

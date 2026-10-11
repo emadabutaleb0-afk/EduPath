@@ -23,6 +23,17 @@ import {
 // DB Mode cache
 export let activeDBMode: 'mock' | 'postgres' = 'mock';
 
+export function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('edupath_token');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 // Helper to parse string grades (e.g. "Grade 4") to numeric values (e.g. 4)
 const parseGradeValue = (g: any): number => {
   if (typeof g === 'number') return g;
@@ -42,7 +53,7 @@ export async function hydrateDatabaseState(): Promise<void> {
     if (modeRes.ok) {
       const modeData = await modeRes.json();
       activeDBMode = modeData.dbMode;
-      console.log(`🔌 Current System Database Driver: ${activeDBMode === 'postgres' ? 'Active PostgreSQL Connection' : 'Persistent SQLite Simulation'}`);
+      console.log(`🔌 Current System Database Driver: ${activeDBMode === 'postgres' ? 'Active PostgreSQL Connection' : 'Persistent Local JSON Database'}`);
     }
 
     // 2. Fetch registries
@@ -89,8 +100,8 @@ export async function hydrateDatabaseState(): Promise<void> {
       }
     }
 
-    // 5. Fetch users
-    const uRes = await fetch('/api/users');
+    // 5. Fetch users (with auth headers if logged in)
+    const uRes = await fetch('/api/users', { headers: getAuthHeaders() });
     if (uRes.ok) {
       const usersData = await uRes.json();
       mockAllUsers.length = 0;
@@ -138,6 +149,11 @@ export async function hydrateDatabaseState(): Promise<void> {
     }
 
     console.log('✅ Database Hydration complete! Loaded memory arrays synchronized perfectly.');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('edupath:database-hydrated', {
+        detail: { timestamp: Date.now() }
+      }));
+    }
   } catch (e) {
     console.error('❌ Failed to hydrate database state from API, operating on local mock arrays', e);
   }
@@ -258,7 +274,7 @@ export async function saveProfileToDB(userId: string, updates: Partial<UserAccou
   try {
     const res = await fetch(`/api/users/${userId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(updates)
     });
     if (res.ok) {
@@ -274,11 +290,30 @@ export async function saveProfileToDB(userId: string, updates: Partial<UserAccou
   return false;
 }
 
-export async function saveCheatingFlagToDB(flagId: string, status: 'pending' | 'reviewed' | 'confirmed' | 'dismissed'): Promise<boolean> {
+export async function deleteUserFromDB(userId: string): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/users/${userId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      const idx = mockAllUsers.findIndex(u => u.id === userId);
+      if (idx !== -1) {
+        mockAllUsers.splice(idx, 1);
+      }
+      return true;
+    }
+  } catch (e) {
+    console.error('deleteUserFromDB failed', e);
+  }
+  return false;
+}
+
+export async function saveCheatingFlagToDB(flagId: string, status: 'pending' | 'reviewed' | 'cleared' | 'confirmed' | 'dismissed'): Promise<boolean> {
   try {
     const res = await fetch(`/api/cheating-flags/${flagId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ status })
     });
     if (res.ok) {

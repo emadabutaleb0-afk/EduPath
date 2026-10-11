@@ -107,9 +107,13 @@ export default function AdminUsers() {
     toast.success(`User status updated to ${newStatus}`);
   };
 
-  const handleDeleteUser = (userId: string, userName: string) => {
-    deleteUser(userId);
-    toast.success(`User ${userName} deleted successfully`);
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    try {
+      await deleteUser(userId);
+      toast.success(`User ${userName} deleted successfully`);
+    } catch {
+      toast.error(`Failed to delete user ${userName}`);
+    }
   };
 
   const handleLinkParentStudent = () => {
