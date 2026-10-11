@@ -4,6 +4,7 @@ import { saveUserToDB, saveProfileToDB, deleteUserFromDB } from '@/lib/dbSync';
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string, role: string) => Promise<void>;
   logout: () => void;
@@ -311,6 +312,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        loading: false,
         isAuthenticated: !!user,
         login,
         logout,

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch, Redirect } from "wouter";
+import { Route, Switch, Redirect, Router as WouterRouter } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { hydrateDatabaseState } from "@/lib/dbSync";
@@ -12,6 +12,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import TeachersList from "./pages/TeachersList";
+import TeacherInvitePoster from "./pages/TeacherInvitePoster";
+import TeacherPitchDeck from "./pages/TeacherPitchDeck";
 import StudentDashboard from "./pages/StudentDashboard";
 import Tests from "./pages/Tests";
 import TestTaking from "./pages/TestTaking";
@@ -83,6 +85,10 @@ function Router() {
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/teachers" component={TeachersList} />
       <Route path="/placement-report" component={PlacementReport} />
+      <Route path="/teacher-invite" component={TeacherInvitePoster} />
+      <Route path="/poster" component={TeacherInvitePoster} />
+      <Route path="/pitch-deck" component={TeacherPitchDeck} />
+      <Route path="/deck" component={TeacherPitchDeck} />
 
       {/* Protected Student Routes */}
       <ProtectedRoute path="/student-dashboard" component={StudentDashboard} allowedRoles={['student']} />
@@ -135,11 +141,6 @@ function Router() {
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   useEffect(() => {
     hydrateDatabaseState();
@@ -151,7 +152,9 @@ function App() {
         <AuthProvider>
           <TooltipProvider>
             <Toaster />
-            <Router />
+            <WouterRouter base={(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}>
+              <Router />
+            </WouterRouter>
           </TooltipProvider>
         </AuthProvider>
       </ThemeProvider>
