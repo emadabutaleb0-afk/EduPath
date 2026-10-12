@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPath — Comprehensive System Feature Presentation Deck</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background: #f8fafc;
+      line-height: 1.45;
+      font-size: 11px;
+    }
+
+    .slide {
+      page-break-after: always;
+      break-after: page;
+      height: 190mm;
+      max-height: 190mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12mm 14mm;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+      .slide {
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+        padding: 6mm 8mm;
+        height: 194mm;
+        max-height: 194mm;
+      }
+    }
+
+    /* Dark Slide Style for high-impact presentations */
+    .slide.dark-theme {
+      background: #090d16;
+      color: #f1f5f9;
+      border-color: #1e293b;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      padding-bottom: 8px;
+    }
+    .dark-theme .slide-header {
+      border-bottom-color: rgba(30, 41, 59, 0.8);
+    }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tag-cyan { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .tag-indigo { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
+    .tag-emerald { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .tag-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .tag-rose { background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; }
+
+    .dark-theme .tag-cyan { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.3); }
+    .dark-theme .tag-indigo { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .dark-theme .tag-emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .dark-theme .tag-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .dark-theme .tag-rose { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    .slide-title {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-top: 4px;
+    }
+    .slide-subtitle {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .dark-theme .slide-subtitle {
+      color: #94a3b8;
+    }
+
+    .slide-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    /* Content Layouts */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .grid-7 {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .grid-split {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    /* UI Mockup Card Styles */
+    .ui-frame {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    .light-ui {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+    }
+
+    .ui-topbar {
+      background: #1e293b;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 9px;
+      color: #94a3b8;
+      border-bottom: 1px solid #334155;
+    }
+    .dots {
+      display: flex;
+      gap: 4px;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .ui-content {
+      padding: 10px;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .light-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: #0f172a;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      padding-top: 6px;
+      margin-top: 8px;
+      font-size: 9px;
+      color: #94a3b8;
+    }
+    .dark-theme .slide-footer {
+      border-top-color: #1e293b;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 8.5px;
+      font-weight: 600;
+    }
+    .pill-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .pill-blue { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+    .pill-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+    .pill-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .pill-rose { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+
+    .code-box {
+      font-family: 'Fira Code', monospace;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: 9px;
+      color: #38bdf8;
+    }
+
+    .accent-cyan { color: #38bdf8; }
+    .accent-emerald { color: #34d399; }
+    .accent-amber { color: #fbbf24; }
+    .accent-rose { color: #fb7185; }
+    .accent-indigo { color: #818cf8; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 1: PLATFORM OVERVIEW & ARCHITECTURE -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-cyan">Executive Briefing • 2026 Edition</span>
+        <h2 class="slide-title">EduPath — AI-Powered Learning & Assessment Ecosystem</h2>
+        <p class="slide-subtitle">Adaptive Diagnostic Testing • 1-on-1 Live Tutoring • Zero-Cost Puter.js AI • Enterprise Dual-Engine DB</p>
+      </div>
+      <span class="slide-number">SLIDE 01 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-4">
+        <div class="card" style="border-left: 3px solid #38bdf8;">
+          <h4 style="color: #38bdf8; font-size: 12px; margin-bottom: 4px;">🎓 Learner Space</h4>
+          <p style="font-size: 9.5px; color: #94a3b8; margin-bottom: 6px;">IRT dynamic placement tests, curriculum milestone tracks, interactive live classroom hub, and instant targeted remediations.</p>
+          <span class="pill pill-blue">Dynamic Difficulty</span>
+        </div>
+
+        <div class="card" style="border-left: 3px solid #818cf8;">
+          <h4 style="color: #818cf8; font-size: 12px; margin-bottom: 4px;">👨‍🏫 Teacher Center</h4>
+          <p style="font-size: 9.5px; color: #94a3b8; margin-bottom: 6px;">Scope-isolated workspaces (e.g. Math/Grade 8), Puter.js AI question generator, drag-drop test builder, and misconception heatmaps.</p>
+          <span class="pill pill-purple">Pedagogical Guard</span>
+        </div>
+
+        <div class="card" style="border-left: 3px solid #fbbf24;">
+          <h4 style="color: #fbbf24; font-size: 12px; margin-bottom: 4px;">👪 Parent Portal</h4>
+          <p style="font-size: 9.5px; color: #94a3b8; margin-bottom: 6px;">Real-time child progress monitoring, multi-tone weekly AI summaries (encouraging, analytical, firm), and card checkout receipts.</p>
+          <span class="pill pill-amber">Family Oversight</span>
+        </div>
+
+        <div class="card" style="border-left: 3px solid #fb7185;">
+          <h4 style="color: #fb7185; font-size: 12px; margin-bottom: 4px;">🛡️ Admin & Security</h4>
+          <p style="font-size: 9.5px; color: #94a3b8; margin-bottom: 6px;">Real-time heuristic anti-cheating telemetry (blur/pacing), content version diffing with 1-click rollback, and dual-mode database engine.</p>
+          <span class="pill pill-rose">Full Auditability</span>
+        </div>
+      </div>
+
+      <div class="ui-frame" style="margin-top: 6px;">
+        <div class="ui-topbar">
+          <div class="dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span style="font-family: 'Fira Code', monospace; font-size: 9px;">https://edupath.app/platform-overview</span>
+          <span style="color: #34d399; font-weight: 600;">● Active Deployment Ready</span>
+        </div>
+        <div class="ui-content" style="display: flex; justify-content: space-around; text-align: center; padding: 12px;">
+          <div>
+            <div style="font-size: 20px; font-weight: 900; color: #38bdf8; font-family: 'Fira Code';">100% Free</div>
+            <div style="font-size: 9.5px; color: #94a3b8; margin-top: 2px;">Client-side Puter.js AI with zero API monthly fees</div>
+          </div>
+          <div style="border-left: 1px solid #334155; padding-left: 20px;">
+            <div style="font-size: 20px; font-weight: 900; color: #818cf8; font-family: 'Fira Code';">&lt; 1 ms</div>
+            <div style="font-size: 9.5px; color: #94a3b8; margin-top: 2px;">Simulated JSON Cache + PostgreSQL Connection Pooling</div>
+          </div>
+          <div style="border-left: 1px solid #334155; padding-left: 20px;">
+            <div style="font-size: 20px; font-weight: 900; color: #34d399; font-family: 'Fira Code';">4 Roles</div>
+            <div style="font-size: 9.5px; color: #94a3b8; margin-top: 2px;">Role-Based Access Control (RBAC) with instant demo switcher</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>EduPath Comprehensive Platform Architecture</span>
+      <span>Confidential & Proprietary • Google DeepMind Agentic Suite</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 2: UNIFIED LIFECYCLE JOURNEY -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-emerald">Lifecycle Architecture</span>
+        <h2 class="slide-title">The Unified 7-Stage EduPath Learning Loop</h2>
+        <p class="slide-subtitle">Continuous Diagnostic Pipeline: From Baseline Profiling to Automated Mastery Reporting</p>
+      </div>
+      <span class="slide-number">SLIDE 02 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-7">
+        <div class="card" style="border-top: 3px solid #38bdf8;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #38bdf8; font-weight: bold;">STAGE 01</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">Smart Onboard</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">Grade level & target subject registration.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #818cf8;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #818cf8; font-weight: bold;">STAGE 02</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">Diagnostic</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">IRT-scaled baseline test uncovers weak points.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #c084fc;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #c084fc; font-weight: bold;">STAGE 03</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">Tutor Match</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">Explore certified teachers by specialty & rate.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #34d399;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #34d399; font-weight: bold;">STAGE 04</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">Booking & Pay</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">Interactive date/slot & simulated card checkout.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #60a5fa;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #60a5fa; font-weight: bold;">STAGE 05</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">Live Tutoring</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">HD WebRTC stream, digital board & live notes.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #fbbf24;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #fbbf24; font-weight: bold;">STAGE 06</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">Retention Quiz</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">5-question exit checkpoint verifies retention.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #fb7185;">
+          <span style="font-family: 'Fira Code'; font-size: 8.5px; color: #fb7185; font-weight: bold;">STAGE 07</span>
+          <h4 style="font-size: 10px; margin: 3px 0; color: #fff;">AI Digest</h4>
+          <p style="font-size: 8.5px; color: #94a3b8;">Multi-tone reports delivered to parents & gradebook.</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top: 8px;">
+        <div class="card">
+          <strong style="color: #38bdf8; font-size: 10px; display: block; margin-bottom: 3px;">1. Continuous Diagnostic Engine</strong>
+          <p style="font-size: 9px; color: #cbd5e1;">Evaluations never end with a static letter grade. Every assessment recalculates student mastery curves and calibrates next-step question difficulty.</p>
+        </div>
+        <div class="card">
+          <strong style="color: #818cf8; font-size: 10px; display: block; margin-bottom: 3px;">2. Human Educator Empowerment</strong>
+          <p style="font-size: 9px; color: #cbd5e1;">Teachers arrive at 1-on-1 sessions with an auto-generated radar of the student's exact algebraic or conceptual missteps, avoiding 15 minutes of discovery triage.</p>
+        </div>
+        <div class="card">
+          <strong style="color: #34d399; font-size: 10px; display: block; margin-bottom: 3px;">3. Automated Remediation Loops</strong>
+          <p style="font-size: 9px; color: #cbd5e1;">Exit quizzes trigger immediate custom micro-drills on missed concepts without requiring the educator to hand-author individual homework assignments.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>EduPath Unified Lifecycle Journey</span>
+      <span>Stage 1 through Stage 7 Synchronization</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 3: DIAGNOSTIC TESTING & ADAPTIVE ENGINE -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-cyan">Student Experience</span>
+        <h2 class="slide-title">Adaptive Diagnostic Testing Engine</h2>
+        <p class="slide-subtitle">Item Response Theory (IRT) Scaling • Real-Time Timer • Question Palette • Secure Lockdown</p>
+      </div>
+      <span class="slide-number">SLIDE 03 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Mock UI of Test Taking -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>Grade 8 • Mathematics Placement Exam</span>
+            <span style="color: #fbbf24; font-family: 'Fira Code'; font-weight: bold;">⏱️ 14:22 remaining</span>
+          </div>
+          <div class="ui-content" style="padding: 12px; font-size: 10px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span class="pill pill-blue">Question 3 of 10</span>
+              <span class="pill pill-green">Difficulty: Medium (Weight 1.5)</span>
+            </div>
+
+            <p style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 10px;">
+              Solve for <span style="color: #38bdf8;">x</span> in the linear equation:<br>
+              <span class="code-box" style="display: inline-block; margin-top: 4px;">3(x - 4) + 2 = 2x + 5</span>
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px;">
+              <div class="card" style="font-size: 10px;">A. x = 11</div>
+              <div class="card" style="border: 1px solid #38bdf8; background: rgba(14, 165, 233, 0.2); font-size: 10px; font-weight: bold; color: #e0f2fe;">
+                B. x = 15 ✓ (Selected)
+              </div>
+              <div class="card" style="font-size: 10px;">C. x = 9</div>
+              <div class="card" style="font-size: 10px;">D. x = -5</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 8px;">
+              <span style="color: #94a3b8; font-size: 9px;">Palette: 1 ✓ | 2 ✓ | <strong>3 (Active)</strong> | 4 | 5 | 6 | 7</span>
+              <span class="pill pill-purple">Save & Next →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explanations & Value -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">⚡ IRT Dynamic Calibration</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">If the student answers correctly, the next question escalates to weight 1.7+. If they stumble, the engine dials down to 1.2 to verify foundational concepts.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">🛡️ Anti-Guessing Fairness</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Students are given instant step-by-step mathematical explanations after submitting, turning diagnostic exams into rich learning opportunities.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #fbbf24; font-size: 11px; margin-bottom: 2px;">📊 Immediate Skill Classification</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Placement outputs pinpoint student percentile relative to national Grade 8 benchmarks, identifying remedial needs in linear algebra or geometry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Student Diagnostic Suite: /test/:id &amp; /test-enhanced/:id</span>
+      <span>Item Response Theory Algorithm</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 4: STUDENT DASHBOARD & PERSONALIZED PATH -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-indigo">Student Experience</span>
+        <h2 class="slide-title">Student Dashboard & Milestone Mastery</h2>
+        <p class="slide-subtitle">Streaks • Upcoming Bookings • Personalized Curriculum Map • Quick Actions</p>
+      </div>
+      <span class="slide-number">SLIDE 04 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Mock UI of Student Dashboard -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>Student Dashboard: Alex Rivera (Grade 8)</span>
+            <span class="pill pill-amber">🔥 7-Day Streak Active</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 10px;">
+            <!-- Upcoming Lesson Banner -->
+            <div class="card" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <strong style="color: #fff; font-size: 11px;">Linear Functions & Slope Masterclass</strong>
+                  <div style="color: #93c5fd; font-size: 9px;">With Sarah Jenkins • Today @ 16:00 (Starts in 25 mins)</div>
+                </div>
+                <span class="pill pill-green">Join Classroom 🚀</span>
+              </div>
+            </div>
+
+            <!-- Subject Mastery Progress -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+              <div class="card" style="text-align: center;">
+                <span style="font-size: 8.5px; color: #94a3b8;">Algebra I</span>
+                <div style="font-size: 14px; font-weight: 800; color: #38bdf8;">88%</div>
+                <span style="font-size: 8px; color: #34d399;">Mastered</span>
+              </div>
+              <div class="card" style="text-align: center;">
+                <span style="font-size: 8.5px; color: #94a3b8;">Geometry</span>
+                <div style="font-size: 14px; font-weight: 800; color: #818cf8;">72%</div>
+                <span style="font-size: 8px; color: #fbbf24;">In Progress</span>
+              </div>
+              <div class="card" style="text-align: center;">
+                <span style="font-size: 8.5px; color: #94a3b8;">Probability</span>
+                <div style="font-size: 14px; font-weight: 800; color: #fb7185;">64%</div>
+                <span style="font-size: 8px; color: #fb7185;">Needs Practice</span>
+              </div>
+            </div>
+
+            <!-- AI Recommended Actions -->
+            <div class="card">
+              <strong style="color: #e2e8f0; font-size: 9.5px; display: block; margin-bottom: 4px;">🎯 AI Recommended Next Steps:</strong>
+              <div style="font-size: 9px; color: #94a3b8; line-height: 1.5;">
+                • Review misstep on <em>Quadratic Factoring</em> from yesterday's test.<br>
+                • Complete 5-minute practice drill on <em>Pythagorean Triples</em>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #818cf8; font-size: 11px; margin-bottom: 2px;">🏆 Gamification & Retention</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Daily streaks, Scholar levels, and achievement badges (First Ace, Speedster) drive continuous student engagement without arbitrary pressure.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">📅 Instant Tutoring Teleportation</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Learners access their scheduled virtual room with one click from their top banner without searching through external calendar links or email invites.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">📈 Longitudinal Growth History</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Progress timelines illustrate concept gains over time, reassuring learners that practice translates directly into measurable academic mastery.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Learner Command Center: /student-dashboard</span>
+      <span>Mastery Rings &amp; Scheduled Appointments</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 5: LIVE CLASSROOM HUB & NOTES DOCK -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-cyan">Live Tutoring Hub</span>
+        <h2 class="slide-title">Live Classroom Hub & Digital Notes Dock</h2>
+        <p class="slide-subtitle">Simulated HD WebRTC Stream • Interactive Whiteboard • Real-Time Agenda • Post-Lesson Checkpoint</p>
+      </div>
+      <span class="slide-number">SLIDE 05 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="ui-frame">
+        <div class="ui-topbar">
+          <div>
+            <span style="color: #ef4444; font-weight: bold;">● REC</span>
+            <span style="margin-left: 8px; font-weight: bold; color: #fff;">Room #LSN-8042: Linear Functions with Sarah Jenkins</span>
+          </div>
+          <span class="pill pill-green">⏱️ 00:38:14 Elapsed • HD 1080p (18ms latency)</span>
+        </div>
+        <div class="ui-content" style="padding: 10px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px;">
+          <!-- Video Frame & Whiteboard Canvas -->
+          <div>
+            <div class="card" style="background: #020617; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 6px; position: relative;">
+              <span style="font-size: 24px;">📹</span>
+              <span style="color: #fff; font-weight: 700; font-size: 11px; margin-top: 4px;">Sarah Jenkins, M.Sc.</span>
+              <span style="color: #34d399; font-size: 8.5px;">WebRTC HD Video Stream Active</span>
+              <div style="position: absolute; bottom: 6px; right: 6px; width: 45px; height: 30px; background: #1e293b; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 7.5px; color: #cbd5e1;">
+                Alex (You)
+              </div>
+            </div>
+            <div class="code-box" style="font-size: 8.5px;">
+              Whiteboard: f(x) = mx + b &nbsp;→&nbsp; Slope m = (y2 - y1) / (x2 - x1)
+            </div>
+          </div>
+
+          <!-- Agenda Checklist -->
+          <div class="card">
+            <strong style="color: #38bdf8; font-size: 10px; display: block; margin-bottom: 6px;">📋 Session Agenda</strong>
+            <div style="font-size: 8.5px; line-height: 1.8; color: #cbd5e1;">
+              <div style="color: #34d399;">✓ 1. Homework review (5m)</div>
+              <div style="color: #34d399;">✓ 2. Slope formula derivation (15m)</div>
+              <div style="color: #38bdf8; font-weight: bold;">● 3. Graphing exercises (Current)</div>
+              <div style="color: #64748b;">○ 4. 5-Question Exit Checkpoint</div>
+            </div>
+          </div>
+
+          <!-- Digital Notes Dock -->
+          <div class="card">
+            <strong style="color: #fbbf24; font-size: 10px; display: block; margin-bottom: 6px;">📝 Digital Notes Dock</strong>
+            <div style="font-size: 8px; font-family: 'Fira Code'; color: #94a3b8; line-height: 1.5; background: #020617; padding: 6px; border-radius: 4px;">
+              • Note: If m &gt; 0, line rises.<br>
+              • If m &lt; 0, line falls.<br>
+              • Parallel lines share identical m.<br>
+              <span style="color: #34d399;">[Synced to Parent Portal]</span>
+            </div>
+            <div style="margin-top: 8px; text-align: right;">
+              <span class="pill pill-rose">Conclude & Launch Quiz</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Virtual Tutoring Room: /classroom/:lessonId</span>
+      <span>WebRTC Video • Synchronized Whiteboard • Real-Time Digital Notes Dock</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 6: TEACHER BOOKING & CHECKOUT MODAL -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-emerald">Booking & Commerce</span>
+        <h2 class="slide-title">Teacher Selection & BookingCheckoutModal</h2>
+        <p class="slide-subtitle">Verified Educator Search • Date & Slot Picker • Simulated Stripe Checkout • Session Pass Ledger</p>
+      </div>
+      <span class="slide-number">SLIDE 06 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Educator Card -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #6366f1); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-size: 13px;">
+                SJ
+              </div>
+              <div>
+                <strong style="color: #fff; font-size: 12px;">Sarah Jenkins, M.Sc.</strong>
+                <span class="pill pill-green" style="margin-left: 4px;">Verified Educator</span>
+                <div style="color: #94a3b8; font-size: 9px;">Grade 8 Mathematics Specialist • 8+ Yrs Experience</div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 6px;">
+              <span style="color: #fbbf24; font-weight: bold;">★ 4.9 (42 reviews)</span>
+              <span style="color: #38bdf8; font-family: 'Fira Code'; font-weight: bold;">$35.00 / session</span>
+            </div>
+            <p style="font-size: 9px; color: #cbd5e1; line-height: 1.4;">
+              Expert in turning around students struggling with linear equations and pre-algebra foundations using visual graphs and targeted drills.
+            </p>
+          </div>
+          <div style="margin-top: 10px;">
+            <span class="pill pill-blue" style="width: 100%; text-align: center; padding: 6px 0; font-size: 10px;">
+              Book 1-on-1 Session ($35.00)
+            </span>
+          </div>
+        </div>
+
+        <!-- BookingCheckoutModal Mockup -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>BookingCheckoutModal: Sarah Jenkins</span>
+            <span class="pill pill-green">Stripe Sandbox Active</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+              <div class="card">
+                <span style="color: #94a3b8; font-size: 8.5px;">Choose Date:</span>
+                <div style="font-weight: bold; color: #fff; font-size: 9.5px;">📅 Thursday, Oct 15</div>
+              </div>
+              <div class="card">
+                <span style="color: #94a3b8; font-size: 8.5px;">Choose Time Slot:</span>
+                <div style="font-weight: bold; color: #fff; font-size: 9.5px;">⏰ 16:00 - 17:00 EST</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color: #94a3b8; font-size: 8.5px;">Payment Method:</span>
+                <span style="color: #34d399; font-size: 8.5px;">Simulated Card</span>
+              </div>
+              <div class="code-box" style="font-size: 8.5px;">
+                4242 •••• •••• 4242 &nbsp;|&nbsp; Exp: 12/28 &nbsp;|&nbsp; CVC: 123
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="color: #94a3b8; font-size: 8.5px;">Total Charge:</span>
+                <strong style="color: #fff; font-size: 12px; font-family: 'Fira Code';"> $35.00</strong>
+              </div>
+              <span class="pill pill-green" style="padding: 5px 10px; font-size: 9.5px;">
+                Authorize & Confirm Pass
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Teacher Booking &amp; Checkout: /teachers &amp; BookingCheckoutModal.tsx</span>
+      <span>Stripe Card Simulation • Transaction Records Synced to DB</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 7: TEACHER COMMAND CENTER & SCOPE ISOLATION -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-indigo">Educator Workspace</span>
+        <h2 class="slide-title">Teacher Command Center & Verification Guard</h2>
+        <p class="slide-subtitle">Strict Academic Scope Guard • Curriculum Planner • Lesson Materials • Direct Deposit Payouts</p>
+      </div>
+      <span class="slide-number">SLIDE 07 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Mock UI Teacher Dashboard -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>Teacher Dashboard: Sarah Jenkins</span>
+            <span class="pill pill-purple">Academic Scope Verified</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <!-- Scope Banner -->
+            <div class="card" style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4); margin-bottom: 8px;">
+              <strong style="color: #c7d2fe; font-size: 10px;">Scope Guard Active:</strong>
+              <span style="color: #94a3b8; font-size: 9px; margin-left: 4px;">Assigned Discipline: <strong>Mathematics</strong> • Grade Level: <strong>8</strong></span>
+            </div>
+
+            <!-- Tab Switcher Mockup -->
+            <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+              <span class="pill pill-blue">Overview</span>
+              <span class="pill pill-purple">Question Bank (52)</span>
+              <span class="pill pill-green">Test Builder</span>
+              <span class="pill pill-amber">Curriculum Units</span>
+              <span class="pill pill-rose">Payouts ($840)</span>
+            </div>
+
+            <!-- Curriculum Units List -->
+            <div class="card" style="margin-bottom: 6px;">
+              <strong style="color: #fff; font-size: 9.5px;">Unit 1: Linear Equations & Systems</strong>
+              <div style="color: #94a3b8; font-size: 8.5px; margin-top: 2px;">12 Questions • 3 Tests Published • 94% Class Pass Rate</div>
+            </div>
+
+            <div class="card">
+              <strong style="color: #fff; font-size: 9.5px;">Unit 2: Geometric Angles & Transformations</strong>
+              <div style="color: #94a3b8; font-size: 8.5px; margin-top: 2px;">18 Questions • 4 Tests Published • 88% Class Pass Rate</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Core Teacher Pillars -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #818cf8; font-size: 11px; margin-bottom: 2px;">🔒 Zero Cross-Discipline Bleed</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Teachers only create and grade content within their certified subject. A mathematics instructor cannot inadvertently edit history quizzes.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">💰 Automatic Monthly Payout Ledger</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Completed live tutoring sessions credit directly to the teacher's earnings ledger ($35/session), with automatic monthly direct deposit payouts.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">📁 Whiteboard Material Attachments</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Upload PDF formula cheat-sheets and diagrams that automatically appear inside student digital notes docks upon classroom entry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Teacher Command Center: /teacher-dashboard</span>
+      <span>Subject &amp; Grade Level Isolation Security</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 8: QUESTION BANK & AI GENERATOR -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-cyan">AI Pedagogical Tools</span>
+        <h2 class="slide-title">Question Bank & Puter AI Question Generator</h2>
+        <p class="slide-subtitle">Bloom's Taxonomy Weights • MCQ & True/False • Puter.js Zero-Cost AI • Bulk CSV/JSON Import</p>
+      </div>
+      <span class="slide-number">SLIDE 08 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- AI Question Generator UI Mockup -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>AI Question Generator: Powered by Puter.js</span>
+            <span class="pill pill-green">Zero API Key Needed</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div class="card" style="margin-bottom: 8px;">
+              <span style="color: #94a3b8; font-size: 8.5px;">Topic Prompt:</span>
+              <div style="color: #fff; font-weight: bold;">Pythagorean Theorem Real-World Word Problems</div>
+              <span style="color: #38bdf8; font-size: 8.5px;">Bloom Level: Application • Weight: 1.50</span>
+            </div>
+
+            <!-- Generated Output Card -->
+            <div class="card" style="border: 1px solid rgba(14, 165, 233, 0.4); background: rgba(14, 165, 233, 0.1); margin-bottom: 8px;">
+              <span class="pill pill-blue" style="margin-bottom: 4px;">Generated MCQ Item</span>
+              <p style="color: #e0f2fe; font-size: 9.5px; margin-bottom: 6px;">
+                A 13-ft ladder leans against a vertical wall with its base 5 ft from the wall. What height does it reach?
+              </p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 8.5px; font-family: 'Fira Code';">
+                <span class="card">A. 10 ft</span>
+                <span class="card" style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: bold;">B. 12 ft (Correct)</span>
+                <span class="card">C. 14 ft</span>
+                <span class="card">D. 8 ft</span>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #94a3b8; font-size: 8.5px;">AI Confidence: 98%</span>
+              <span class="pill pill-green">Approve & Save to Question Bank</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Bank Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">📚 Rich Question Repository</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Filter repository by difficulty (Easy, Medium, Hard), question type (MCQ, True/False), or search keywords in question bodies or explanations.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #c084fc; font-size: 11px; margin-bottom: 2px;">⚡ Bulk CSV & JSON Ingestion</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Batch import 50+ questions from school district question files. Automatic schema validators prevent malformed choices or missing answer keys.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #fbbf24; font-size: 11px; margin-bottom: 2px;">🧠 Mandatory Pedagogical Explanations</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Every item includes step-by-step problem rationales ensuring students understand why their choice was correct or where their logic failed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Question Bank Suite: /teacher-dashboard?tab=question-bank &amp; /ai/question-generator</span>
+      <span>Client-Side LLM Prompt Automation</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 9: TEST BUILDER & MISCONCEPTION FORENSICS -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-indigo">Assessment Builder</span>
+        <h2 class="slide-title">Adaptive Test Builder & Misconception Forensics</h2>
+        <p class="slide-subtitle">Timed Exams • Passing Thresholds • Item Misconception Radar • 1-Click Retraining Paths</p>
+      </div>
+      <span class="slide-number">SLIDE 09 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Test Builder UI Mockup -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>Test Builder: Polynomials Midterm Exam</span>
+            <span class="pill pill-purple">Adaptive Mode ON</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+              <div class="card" style="text-align: center;">
+                <span style="color: #94a3b8; font-size: 8px;">Duration</span>
+                <div style="font-weight: 800; color: #fff; font-size: 11px;">30 Mins</div>
+              </div>
+              <div class="card" style="text-align: center;">
+                <span style="color: #94a3b8; font-size: 8px;">Questions</span>
+                <div style="font-weight: 800; color: #fff; font-size: 11px;">15 Items</div>
+              </div>
+              <div class="card" style="text-align: center;">
+                <span style="color: #94a3b8; font-size: 8px;">Pass Cutoff</span>
+                <div style="font-weight: 800; color: #34d399; font-size: 11px;">70%</div>
+              </div>
+            </div>
+
+            <!-- Class Misconception Radar -->
+            <div class="card" style="margin-bottom: 8px;">
+              <strong style="color: #fff; font-size: 9px; display: block; margin-bottom: 4px;">Class Misconception Radar:</strong>
+              <div style="margin-bottom: 4px;">
+                <div style="display: flex; justify-content: space-between; font-size: 8px; color: #cbd5e1;">
+                  <span>Negative Exponents Rule</span>
+                  <span style="color: #fb7185; font-weight: bold;">42% Miss Rate (High Alarm)</span>
+                </div>
+                <div style="background: #334155; border-radius: 9999px; height: 4px; overflow: hidden; margin-top: 2px;">
+                  <div style="background: #ef4444; width: 42%; height: 4px;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 8px; color: #cbd5e1;">
+                  <span>Distributive Property with Negatives</span>
+                  <span style="color: #fbbf24; font-weight: bold;">28% Miss Rate</span>
+                </div>
+                <div style="background: #334155; border-radius: 9999px; height: 4px; overflow: hidden; margin-top: 2px;">
+                  <div style="background: #f59e0b; width: 28%; height: 4px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <span class="pill pill-purple" style="width: 100%; text-align: center; padding: 5px 0;">
+              Launch 1-Click Targeted Retraining Assignment
+            </span>
+          </div>
+        </div>
+
+        <!-- Value Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #818cf8; font-size: 11px; margin-bottom: 2px;">🎯 Forensic Misconception Detection</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Instead of reporting simple test averages, EduPath highlights specific conceptual blind spots that tripped up multiple students across the grade.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">🔄 Automated Remediation Pipelines</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">One click automatically packages targeted 5-question micro-quizzes for students scoring below 70%, targeting only their individual missed items.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">🔔 Zero-Delay Gradebook Notifications</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Real-time submission alerts pop up immediately upon test completion, freeing educators from grading stacks of homework on weekends.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Teacher Test Builder: /teacher-dashboard?tab=test-builder</span>
+      <span>Item Analytics &amp; Automated Remediation Triggers</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 10: PARENT PORTAL & AI WEEKLY REPORT -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-amber">Parent Oversight</span>
+        <h2 class="slide-title">Parent Portal & AI Weekly Report Summarizer</h2>
+        <p class="slide-subtitle">Linked Student Telemetry • Multi-Tone AI Summaries (Encouraging, Firm, Analytical) • Actionable Study Plans</p>
+      </div>
+      <span class="slide-number">SLIDE 10 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- AI Parent Report UI Mockup -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>AI Parent Report Summarizer: Alex Rivera</span>
+            <span class="pill pill-amber">Tone: Encouraging</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div class="card" style="margin-bottom: 8px;">
+              <strong style="color: #fbbf24; font-size: 10px; display: block; margin-bottom: 4px;">Weekly Performance Digest:</strong>
+              <p style="font-size: 9px; color: #e2e8f0; line-height: 1.45;">
+                “Alex demonstrated tremendous effort in Mathematics this week, climbing from <strong>72% to 88%</strong> in linear equations! While quadratic factoring still poses challenges, Alex completed all scheduled tutoring sessions with Sarah Jenkins.”
+              </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+              <div class="card" style="border-left: 2px solid #34d399;">
+                <span style="color: #34d399; font-weight: bold; font-size: 8.5px;">🌟 Key Strengths</span>
+                <p style="font-size: 8px; color: #94a3b8; margin-top: 2px;">Graphing coordinates, linear slopes, punctual session attendance.</p>
+              </div>
+              <div class="card" style="border-left: 2px solid #fbbf24;">
+                <span style="color: #fbbf24; font-weight: bold; font-size: 8.5px;">🎯 Growth Areas</span>
+                <p style="font-size: 8px; color: #94a3b8; margin-top: 2px;">Factoring trinomials with leading coefficients &gt; 1.</p>
+              </div>
+            </div>
+
+            <div class="card" style="background: rgba(30, 58, 138, 0.2); border: 1px solid rgba(59, 130, 246, 0.3);">
+              <span style="color: #93c5fd; font-size: 8.5px;"><strong>Recommended Weekend Action:</strong> 15-minute practice session on factoring trinomials before Monday's review.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parent Value Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #fbbf24; font-size: 11px; margin-bottom: 2px;">🎙️ Customizable Tone Selector</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Parents can toggle between <em>Encouraging</em> (positive reinforcement), <em>Analytical</em> (data and percentile metrics), or <em>Firm</em> (strict accountability reminders).</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">👨‍👩‍👧 Multi-Child Account Switching</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Parents with multiple students enrolled can toggle between children seamlessly, reviewing individual teacher notes and scheduled appointments.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">📄 1-Click Printable PDF Summary</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Generate clean, professional 1-page reports to share with school counselors or private tutors during academic reviews.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Family Experience: /parent-dashboard &amp; /ai/parent-reports</span>
+      <span>Adaptive Tone Summarization (Encouraging / Analytical / Firm)</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 11: ADMIN CHEATING DETECTION & INTEGRITY -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-rose">Security & Integrity</span>
+        <h2 class="slide-title">AI Cheating Detection & Integrity Telemetry</h2>
+        <p class="slide-subtitle">Tab Blur Monitoring • Answer Pacing Anomalies (&lt;3.5s) • Clipboard Traps • Triage Incident Workflow</p>
+      </div>
+      <span class="slide-number">SLIDE 11 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Cheating Monitor Mockup -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>Live Cheating Telemetry Monitor</span>
+            <span class="pill pill-rose">2 Incidents Flagged</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div class="card" style="border: 1px solid rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.1); margin-bottom: 6px;">
+              <div style="display: flex; justify-content: space-between;">
+                <strong style="color: #fff;">Marcus Vance — Midterm Physics</strong>
+                <span class="pill pill-rose">High Severity</span>
+              </div>
+              <p style="color: #fecdd3; font-size: 8.5px; margin-top: 2px;">Trigger: Window Blur / Tab Switch (4 occurrences during exam)</p>
+              <div style="display: flex; justify-content: flex-end; gap: 4px; margin-top: 4px;">
+                <span class="pill pill-green">Clear Incident</span>
+                <span class="pill pill-rose">Require Retest</span>
+              </div>
+            </div>
+
+            <div class="card" style="border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.1); margin-bottom: 6px;">
+              <div style="display: flex; justify-content: space-between;">
+                <strong style="color: #fff;">Elena Rostova — Grade 8 Algebra</strong>
+                <span class="pill pill-amber">Medium Severity</span>
+              </div>
+              <p style="color: #fef3c7; font-size: 8.5px; margin-top: 2px;">Trigger: Pacing Anomaly: 5 complex items answered in 7.2s</p>
+              <div style="display: flex; justify-content: flex-end; gap: 4px; margin-top: 4px;">
+                <span class="pill pill-green">Clear Incident</span>
+                <span class="pill pill-rose">Require Retest</span>
+              </div>
+            </div>
+
+            <div class="code-box" style="font-size: 8px;">
+              Integrity Engine: Heuristic Rule-Based + Anomaly Scorer [Active]
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrity Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #fb7185; font-size: 11px; margin-bottom: 2px;">👁️ Non-Invasive Browser Telemetry</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Monitors browser visibility state, fullscreen state, and clipboard paste listeners without invasive background webcam recording or invasive software installations.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #fbbf24; font-size: 11px; margin-bottom: 2px;">⏱️ Answer Pacing Forensics</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Detects answer speeds faster than human comprehension thresholds (&lt;3.5s per multi-step math problem) indicating script automation or lucky guessing.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">⚖️ Administrative Due Process</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Teachers and administrators can review timestamps, examine student response times, and decide whether to clear false positives or require a supervised retest.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Security Surveillance: /admin/cheating-detection</span>
+      <span>Browser Event Heuristics &amp; Statistical Pacing Scoring</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 12: ADMIN CONTENT VERSIONING & AUDIT TRAIL -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-cyan">Content Governance</span>
+        <h2 class="slide-title">Content Versioning & Full System Audit Trail</h2>
+        <p class="slide-subtitle">Reversible Test Edits • Side-by-Side Diff Viewing • 1-Click Rollback • Immutable Event Logging</p>
+      </div>
+      <span class="slide-number">SLIDE 12 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- Version Diff Preview -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>Content Version Diff: Algebra Midterm</span>
+            <span class="pill pill-blue">Revision v2 vs v3</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+              <div class="card" style="border: 1px solid rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.1);">
+                <strong style="color: #fb7185; font-size: 9.5px;">Version 2 (Previous)</strong>
+                <div style="font-size: 8px; color: #94a3b8;">Author: Teacher Sarah (10/08)</div>
+                <div class="code-box" style="margin-top: 4px; font-size: 8px; color: #fca5a5;">
+                  - Passing Score: 60%<br>
+                  - Total Questions: 10<br>
+                  - Weight: 1.00
+                </div>
+              </div>
+
+              <div class="card" style="border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1);">
+                <strong style="color: #34d399; font-size: 9.5px;">Version 3 (Current)</strong>
+                <div style="font-size: 8px; color: #94a3b8;">Author: Admin Robert (10/11)</div>
+                <div class="code-box" style="margin-top: 4px; font-size: 8px; color: #86efac;">
+                  + Passing Score: 70%<br>
+                  + Total Questions: 12<br>
+                  + Weight: 1.50
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 6px;">
+              <span class="pill pill-blue">Inspect Full JSON Diff</span>
+              <span class="pill pill-rose">Rollback to Version 2</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">⏪ Guaranteed Reversibility</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">If an educator makes accidental modifications to question keys or exam timings, admins can revert to any prior state instantaneously.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #818cf8; font-size: 11px; margin-bottom: 2px;">📜 Comprehensive Event Audit Trail</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Tracks every login, privilege elevation, test submission, and question creation with full ISO timestamps and IP addresses.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">🛡️ Multi-Tenancy Protection</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Maintains curricular integrity across multiple schools and departments without risking database corruption.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Content Management: /admin/content-management &amp; ContentVersion Schema</span>
+      <span>Immutable Version Diffing &amp; 1-Click Rollback Engine</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 13: SYSTEM DIAGNOSTICS & DUAL DATABASE ARCHITECTURE -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-emerald">Infrastructure</span>
+        <h2 class="slide-title">System Diagnostics & Dual Database Architecture</h2>
+        <p class="slide-subtitle">Simulated JSON Engine &lt;–&gt; Enterprise PostgreSQL • Zero-DevOps Setup • Connection Pool Telemetry</p>
+      </div>
+      <span class="slide-number">SLIDE 13 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-split">
+        <!-- DB Diagnostics UI Mockup -->
+        <div class="ui-frame">
+          <div class="ui-topbar">
+            <span>System Telemetry &amp; DB Mode Switcher</span>
+            <span class="pill pill-green">Dual Engine Ready</span>
+          </div>
+          <div class="ui-content" style="padding: 10px; font-size: 9.5px;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+              <div class="card" style="text-align: center;">
+                <span style="color: #94a3b8; font-size: 8px;">Active Mode</span>
+                <div style="font-weight: 800; color: #34d399; font-size: 11px;">Simulated JSON</div>
+              </div>
+              <div class="card" style="text-align: center;">
+                <span style="color: #94a3b8; font-size: 8px;">Query Latency</span>
+                <div style="font-weight: 800; color: #38bdf8; font-size: 11px;">&lt; 1 ms</div>
+              </div>
+              <div class="card" style="text-align: center;">
+                <span style="color: #94a3b8; font-size: 8px;">Total Records</span>
+                <div style="font-weight: 800; color: #818cf8; font-size: 11px;">142 Seeded</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 8px; font-size: 8.5px; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #94a3b8;">PostgreSQL Pool Status:</span>
+                <span style="color: #cbd5e1; font-family: 'Fira Code';">STANDBY (Ready on demand)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #94a3b8;">Client Data Hydrator:</span>
+                <span style="color: #34d399; font-family: 'Fira Code';">Local Sync + Event Bus</span>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between;">
+              <span class="pill pill-blue">Trigger Safe Seeder</span>
+              <span class="pill pill-green">Switch to PostgreSQL Engine</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Infrastructure Highlights -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="card">
+            <h4 style="color: #34d399; font-size: 11px; margin-bottom: 2px;">⚡ Zero-Barrier Local Execution</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Stakeholders can clone and run EduPath on any machine with just <code>npm run dev</code>. No database setup, Docker daemons, or credentials required.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 2px;">🐘 Enterprise PostgreSQL Ready</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Configure <code>DATABASE_URL</code> in environment variables, and the server switches to enterprise PostgreSQL connection pooling with transactional schema guarantees.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="color: #818cf8; font-size: 11px; margin-bottom: 2px;">🔄 Automated Database Reseeding</h4>
+            <p style="font-size: 9.5px; color: #94a3b8;">Administrators can trigger mock reseeding in development mode at any time to return the platform to an initial state for clean evaluation demonstrations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>System Health: /admin/system &amp; /api/db-status</span>
+      <span>Hybrid Simulated File &amp; PostgreSQL Pool Architecture</span>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- SLIDE 14: SUMMARY & LIVE DEMO GUIDE -->
+  <!-- ============================================================= -->
+  <section class="slide dark-theme">
+    <div class="slide-header">
+      <div>
+        <span class="tag-badge tag-cyan">Interactive Demo</span>
+        <h2 class="slide-title">Live Evaluation & Interactive Walkthrough Guide</h2>
+        <p class="slide-subtitle">Instant Demo Role Switcher • Direct Feature Navigation • Complete PDF Documentation Exports</p>
+      </div>
+      <span class="slide-number">SLIDE 14 / 14</span>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-4" style="margin-bottom: 8px;">
+        <div class="card" style="border-top: 3px solid #38bdf8;">
+          <h4 style="color: #38bdf8; font-size: 11px; margin-bottom: 3px;">1. Student Demo</h4>
+          <p style="font-size: 8.5px; color: #94a3b8; margin-bottom: 6px;">Test taking, learning streaks, upcoming lessons.</p>
+          <div class="code-box" style="font-size: 8px;">Route: /student-dashboard</div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #818cf8;">
+          <h4 style="color: #818cf8; font-size: 11px; margin-bottom: 3px;">2. Teacher Demo</h4>
+          <p style="font-size: 8.5px; color: #94a3b8; margin-bottom: 6px;">AI Question generator, test builder, gradebook.</p>
+          <div class="code-box" style="font-size: 8px;">Route: /teacher-dashboard</div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #fbbf24;">
+          <h4 style="color: #fbbf24; font-size: 11px; margin-bottom: 3px;">3. Parent Demo</h4>
+          <p style="font-size: 8.5px; color: #94a3b8; margin-bottom: 6px;">Weekly AI digests, booking receipts, growth radar.</p>
+          <div class="code-box" style="font-size: 8px;">Route: /parent-dashboard</div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #fb7185;">
+          <h4 style="color: #fb7185; font-size: 11px; margin-bottom: 3px;">4. Admin Demo</h4>
+          <p style="font-size: 8.5px; color: #94a3b8; margin-bottom: 6px;">Cheating telemetry, content diffs, DB health.</p>
+          <div class="code-box" style="font-size: 8px;">Route: /admin-dashboard</div>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 12px; background: rgba(15, 23, 42, 0.8);">
+        <h4 style="color: #fff; font-size: 11px; margin-bottom: 4px;">📑 Comprehensive Offline PDF Handbooks Available in Workspace Root:</h4>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-size: 8.5px;">
+          <div class="card"><strong>EduPath_Student_Tutorial.pdf</strong><br><span style="color: #94a3b8;">Complete Student Handbook</span></div>
+          <div class="card"><strong>EduPath_Teacher_Tutorial.pdf</strong><br><span style="color: #94a3b8;">Teacher Operations Manual</span></div>
+          <div class="card"><strong>EduPath_System_Manual.pdf</strong><br><span style="color: #94a3b8;">4-Role System Manual</span></div>
+          <div class="card"><strong>EduPath_System_Presentation.pdf</strong><br><span style="color: #38bdf8;">This 14-Slide Presentation</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>EduPath Presentation Deck • Ready for Live Demonstration &amp; Production Deployment</span>
+      <span>Google DeepMind Agentic Pair Programming</span>
+    </div>
+  </section>
+
+</body>
+</html>

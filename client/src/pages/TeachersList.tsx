@@ -33,6 +33,7 @@ import {
   unenrollStudent, 
   hydrateDatabaseState 
 } from '@/lib/dbSync';
+import { BookingCheckoutModal } from '@/components/BookingCheckoutModal';
 import { 
   Search, 
   Filter, 
@@ -46,7 +47,9 @@ import {
   Mail, 
   CheckCircle, 
   XCircle, 
-  Sparkles
+  Sparkles,
+  Calendar,
+  Star
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -87,6 +90,10 @@ export default function TeachersList() {
   const [enrollSubject, setEnrollSubject] = useState<string>('');
   const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false);
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
+
+  // Booking & Checkout Modal state
+  const [bookingTeacher, setBookingTeacher] = useState<UserAccount | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -143,6 +150,21 @@ export default function TeachersList() {
       setEnrollSubject('');
     }
     setIsEnrollDialogOpen(true);
+  };
+
+  const handleBookClick = (teacher: UserAccount) => {
+    if (!user) {
+      setIsGuestDialogOpen(true);
+      return;
+    }
+
+    if (user.role !== 'student') {
+      toast.error('Only registered students can book tutoring lessons.');
+      return;
+    }
+
+    setBookingTeacher(teacher);
+    setIsBookingModalOpen(true);
   };
 
   const handleConfirmEnroll = async () => {
@@ -301,6 +323,15 @@ export default function TeachersList() {
                               Grade {teacher.gradeLevel || '8'}
                             </Badge>
                           </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-border/40 text-xs">
+                            <span className="flex items-center gap-1 text-amber-500 font-bold">
+                              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" /> 4.9 <span className="text-muted-foreground font-normal text-[11px]">(84 reviews)</span>
+                            </span>
+                            <span className="font-extrabold text-foreground text-xs">
+                              $35 <span className="font-normal text-muted-foreground text-[10px]">/ 45m lesson</span>
+                            </span>
+                          </div>
                         </div>
                       </CardContent>
                     </div>
@@ -328,13 +359,23 @@ export default function TeachersList() {
                           </div>
                         )}
 
-                        <Button 
-                          onClick={() => handleEnrollClick(teacher)}
-                          className="w-full bg-primary hover:opacity-90 hover-lift text-xs h-9 font-semibold text-white shadow-sm"
-                        >
-                          <GraduationCap className="w-4 h-4 mr-2" />
-                          Enroll Now
-                        </Button>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button 
+                            onClick={() => handleBookClick(teacher)}
+                            className="bg-primary hover:opacity-90 hover-lift text-xs h-9 font-bold text-white shadow-sm"
+                          >
+                            <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                            Book Lesson
+                          </Button>
+                          <Button 
+                            variant="outline"
+                            onClick={() => handleEnrollClick(teacher)}
+                            className="border-border hover-lift text-xs h-9 font-semibold hover:bg-muted/30"
+                          >
+                            <GraduationCap className="w-3.5 h-3.5 mr-1" />
+                            Enroll Class
+                          </Button>
+                        </div>
                       </div>
                     </CardFooter>
                   </Card>
@@ -428,6 +469,16 @@ export default function TeachersList() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Booking & Checkout Modal */}
+      <BookingCheckoutModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        teacher={bookingTeacher}
+        onBookingSuccess={() => {
+          toast.success('Your lesson has been added to your schedule.');
+        }}
+      />
     </div>
   );
 }

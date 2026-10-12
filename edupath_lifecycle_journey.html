@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPath — The Unified Lifecycle Journey</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .header {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 16px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #2563eb, #10b981);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #0f172a, #334155);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .doc-meta {
+      text-align: right;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #f0fdf4 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
+    .hero-banner h1 {
+      font-size: 20px;
+      margin-bottom: 6px;
+      color: #0f172a;
+    }
+
+    .hero-banner p {
+      font-size: 12.5px;
+      color: #475569;
+      max-width: 95%;
+      line-height: 1.5;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      padding-top: 10px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid #f1f5f9;
+    }
+
+    .section-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    /* Diagram Styles */
+    .flow-diagram-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stage-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stage-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .stage-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .num-1 { background: #dbeafe; color: #1e40af; }
+    .num-2 { background: #fef3c7; color: #b45309; }
+    .num-3 { background: #e0e7ff; color: #4338ca; }
+    .num-4 { background: #dcfce7; color: #15803d; }
+    .num-5 { background: #fae8ff; color: #86198f; }
+    .num-6 { background: #e0f2fe; color: #0369a1; }
+
+    .stage-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+
+    .stage-desc {
+      font-size: 11.5px;
+      color: #64748b;
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+
+    .key-points {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .key-points li {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .key-points li::before {
+      content: "•";
+      position: absolute;
+      left: 3px;
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    /* Comparison Table */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .styled-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .styled-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+
+    .styled-table tr:nth-child(even) td {
+      background: #fafafa;
+    }
+
+    .tag-state {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .tag-before { background: #fee2e2; color: #991b1b; }
+    .tag-after { background: #dcfce7; color: #166534; }
+
+    .callout {
+      background: #f8fafc;
+      border-left: 3.5px solid #2563eb;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 11.5px;
+      color: #334155;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <div class="logo-badge">E</div>
+      <div>
+        <h2 class="brand-title">EduPath Platform</h2>
+        <div class="brand-sub">Product & UX Architecture Specification</div>
+      </div>
+    </div>
+    <div class="doc-meta">
+      <span class="badge">Architecture Blueprint</span>
+      <div style="margin-top: 4px;">Revision 2.4 • October 2026</div>
+    </div>
+  </div>
+
+  <!-- HERO BANNER -->
+  <div class="hero-banner">
+    <span class="badge" style="margin-bottom: 6px;">Lifecycle Redesign</span>
+    <h1>🗺️ The Unified EduPath Lifecycle Journey</h1>
+    <p>
+      An end-to-end blueprint harmonizing the learner, parent, and educator experiences across six interconnected stages: 
+      <strong>Sign Up & Onboarding</strong>, <strong>Selecting Teacher</strong>, <strong>Payment & Booking</strong>, 
+      <strong>Joining Lesson</strong>, <strong>Assessment & Testing</strong>, and <strong>Results & Reporting</strong>.
+    </p>
+  </div>
+
+  <!-- HIGH LEVEL LIFECYCLE FLOW (SVG) -->
+  <div class="flow-diagram-container">
+    <div style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">
+      End-to-End Circular Learning Loop
+    </div>
+    <svg width="100%" height="90" viewBox="0 0 740 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Steps Background & Connectors -->
+      <path d="M 115 45 L 140 45" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)" />
+      <path d="M 235 45 L 260 45" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" />
+      <path d="M 355 45 L 380 45" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" />
+      <path d="M 475 45 L 500 45" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" />
+      <path d="M 595 45 L 620 45" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" />
+
+      <!-- Curved feedback loop from Step 6 back to Step 2 & 4 -->
+      <path d="M 680 65 C 680 85, 200 85, 200 65" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="3 3" fill="none" />
+      <text x="440" y="82" fill="#2563EB" font-size="9" font-weight="600" text-anchor="middle">Adaptive Feedback & Remediation Loop</text>
+
+      <!-- Step 1 -->
+      <rect x="10" y="15" width="105" height="58" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5" />
+      <text x="62" y="36" fill="#1D4ED8" font-size="11" font-weight="700" text-anchor="middle">1. Sign Up</text>
+      <text x="62" y="52" fill="#64748B" font-size="9" text-anchor="middle">&amp; Onboarding</text>
+
+      <!-- Step 2 -->
+      <rect x="140" y="15" width="95" height="58" rx="8" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1.5" />
+      <text x="187" y="36" fill="#B45309" font-size="11" font-weight="700" text-anchor="middle">2. Select</text>
+      <text x="187" y="52" fill="#64748B" font-size="9" text-anchor="middle">Teacher</text>
+
+      <!-- Step 3 -->
+      <rect x="260" y="15" width="95" height="58" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5" />
+      <text x="307" y="36" fill="#4338CA" font-size="11" font-weight="700" text-anchor="middle">3. Payment</text>
+      <text x="307" y="52" fill="#64748B" font-size="9" text-anchor="middle">&amp; Booking</text>
+
+      <!-- Step 4 -->
+      <rect x="380" y="15" width="95" height="58" rx="8" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.5" />
+      <text x="427" y="36" fill="#047857" font-size="11" font-weight="700" text-anchor="middle">4. Join</text>
+      <text x="427" y="52" fill="#64748B" font-size="9" text-anchor="middle">Live Lesson</text>
+
+      <!-- Step 5 -->
+      <rect x="500" y="15" width="95" height="58" rx="8" fill="#FDF4FF" stroke="#F5D0FE" stroke-width="1.5" />
+      <text x="547" y="36" fill="#A21CAF" font-size="11" font-weight="700" text-anchor="middle">5. Assessment</text>
+      <text x="547" y="52" fill="#64748B" font-size="9" text-anchor="middle">&amp; Testing</text>
+
+      <!-- Step 6 -->
+      <rect x="620" y="15" width="110" height="58" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5" />
+      <text x="675" y="36" fill="#0284C7" font-size="11" font-weight="700" text-anchor="middle">6. Results</text>
+      <text x="675" y="52" fill="#64748B" font-size="9" text-anchor="middle">&amp; AI Reporting</text>
+    </svg>
+  </div>
+
+  <!-- THE SIX PILLARS IN DETAIL -->
+  <h3 class="section-title">
+    <span class="section-icon" style="background: #eff6ff; color: #2563eb;">✦</span>
+    Detailed Stage Breakdown &amp; User Experience Blueprint
+  </h3>
+
+  <div class="stage-grid">
+    <!-- STAGE 1 -->
+    <div class="stage-card">
+      <div>
+        <div class="stage-card-header">
+          <div class="stage-num num-1">1</div>
+          <div>
+            <div class="stage-title">Sign Up &amp; Diagnostic Onboarding</div>
+            <div style="font-size: 10px; color: #2563eb; font-weight: 600;">Personalized Profile Genesis</div>
+          </div>
+        </div>
+        <p class="stage-desc">
+          Replaces generic authentication forms with an active 3-step profile calibration wizard. Captures grade level, subject interests, and baseline aptitude.
+        </p>
+        <ul class="key-points">
+          <li><strong>Role Selection:</strong> Student, Parent, or Teacher with dedicated profile fields.</li>
+          <li><strong>5-Minute Adaptive Diagnostic:</strong> Calibrates entry difficulty (skippable).</li>
+          <li><strong>Parent-Student Linkage:</strong> One-click invite code generates linked oversight.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STAGE 2 -->
+    <div class="stage-card">
+      <div>
+        <div class="stage-card-header">
+          <div class="stage-num num-2">2</div>
+          <div>
+            <div class="stage-title">Teacher Discovery &amp; Matching</div>
+            <div style="font-size: 10px; color: #d97706; font-weight: 600;">Transparent Educator Marketplace</div>
+          </div>
+        </div>
+        <p class="stage-desc">
+          Empowers students and parents to discover vetted instructors through rich credential cards, video intros, reviews, and interactive calendar availability.
+        </p>
+        <ul class="key-points">
+          <li><strong>Verified Badges &amp; Ratings:</strong> Real student reviews and mastery pass rates.</li>
+          <li><strong>Subject Specialties:</strong> Clear subject tags (Math, Science, English, etc.).</li>
+          <li><strong>Live Slot Picker:</strong> View upcoming open lesson slots in the student's timezone.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STAGE 3 -->
+    <div class="stage-card">
+      <div>
+        <div class="stage-card-header">
+          <div class="stage-num num-3">3</div>
+          <div>
+            <div class="stage-title">Transparent Payment &amp; Booking</div>
+            <div style="font-size: 10px; color: #4338ca; font-weight: 600;">Frictionless Checkout</div>
+          </div>
+        </div>
+        <p class="stage-desc">
+          Eliminates hidden costs with upfront pricing. Supports single session bookings, discounted monthly tutoring packages, and instant booking confirmation.
+        </p>
+        <ul class="key-points">
+          <li><strong>Flexible Tiers:</strong> Pay-per-lesson ($25–$45) or Monthly Pass (-15%).</li>
+          <li><strong>One-Click Calendar Sync:</strong> Downloadable .ics and Google Calendar integration.</li>
+          <li><strong>Satisfaction Guarantee:</strong> Free cancellation up to 12 hours prior to start.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STAGE 4 -->
+    <div class="stage-card">
+      <div>
+        <div class="stage-card-header">
+          <div class="stage-num num-4">4</div>
+          <div>
+            <div class="stage-title">Joining Lesson &amp; Virtual Classroom</div>
+            <div style="font-size: 10px; color: #15803d; font-weight: 600;">Interactive Learning Space</div>
+          </div>
+        </div>
+        <p class="stage-desc">
+          A persistent session hub with countdown timer, 1-click meeting launch, shared interactive whiteboards, curated agenda checklist, and downloadable notes.
+        </p>
+        <ul class="key-points">
+          <li><strong>Pre-Session Notification:</strong> 15m alert with direct "Enter Classroom" button.</li>
+          <li><strong>Integrated Media:</strong> Video stream, digital whiteboard, and syllabus sync.</li>
+          <li><strong>Post-Session Wrap:</strong> Teacher tags completion &amp; attaches post-quiz check.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STAGE 5 -->
+    <div class="stage-card">
+      <div>
+        <div class="stage-card-header">
+          <div class="stage-num num-5">5</div>
+          <div>
+            <div class="stage-title">Assessment &amp; Adaptive Testing</div>
+            <div style="font-size: 10px; color: #86198f; font-weight: 600;">Adaptive Test Engine</div>
+          </div>
+        </div>
+        <p class="stage-desc">
+          Dynamic item difficulty scaling (Easy ➔ Medium ➔ Hard) based on live student performance, complemented by focus-tracking anti-cheating heuristics.
+        </p>
+        <ul class="key-points">
+          <li><strong>Contextual Micro-Checks:</strong> 5-question quizzes following live lessons.</li>
+          <li><strong>Dynamic Question Calibration:</strong> Tests adapt to student mastery live.</li>
+          <li><strong>Cheating Detection:</strong> Tab-switch and window-blur analytics protection.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STAGE 6 -->
+    <div class="stage-card">
+      <div>
+        <div class="stage-card-header">
+          <div class="stage-num num-6">6</div>
+          <div>
+            <div class="stage-title">Results, Analytics &amp; AI Reporting</div>
+            <div style="font-size: 10px; color: #0284c7; font-weight: 600;">360° Multi-Stakeholder Intelligence</div>
+          </div>
+        </div>
+        <p class="stage-desc">
+          Immediate, actionable feedback tailored for all three user roles: Student (AI tutor breakdown), Teacher (curriculum heatmap), and Parent (weekly summary).
+        </p>
+        <ul class="key-points">
+          <li><strong>Student Growth:</strong> Confetti celebration, XP, and question-level AI explanations.</li>
+          <li><strong>Parent AI Summaries:</strong> Natural language reports highlighting mastery areas.</li>
+          <li><strong>Automated Retraining Loop:</strong> Auto-generates targeted practice drills.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- COMPARISON TABLE -->
+  <h3 class="section-title">
+    <span class="section-icon" style="background: #fef3c7; color: #b45309;">⚖</span>
+    Lifecycle Transformation Matrix (Before vs. After)
+  </h3>
+
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th style="width: 18%;">Lifecycle Stage</th>
+        <th style="width: 38%;">Legacy Baseline</th>
+        <th style="width: 44%;">Revised EduPath Experience</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Sign Up &amp; Onboard</strong></td>
+        <td><span class="tag-state tag-before">Basic</span> Standard email/password form; empty dashboard on entry.</td>
+        <td><span class="tag-state tag-after">Personalized</span> Multi-step onboarding with grade selection, goal setting, and 5-min diagnostic placement test.</td>
+      </tr>
+      <tr>
+        <td><strong>2. Select Teacher</strong></td>
+        <td><span class="tag-state tag-before">Static</span> Directory list with simple "Enroll" button; no pricing or schedule.</td>
+        <td><span class="tag-state tag-after">Marketplace</span> Rich cards with student ratings, video intro, transparent per-lesson pricing, and live calendar slot selector.</td>
+      </tr>
+      <tr>
+        <td><strong>3. Payment &amp; Booking</strong></td>
+        <td><span class="tag-state tag-before">Unsurfaced</span> Teacher ledger only; students had no checkout or booking flow.</td>
+        <td><span class="tag-state tag-after">Integrated</span> Frictionless modal with Single Session vs. Monthly Pass tiers, instant receipts, and auto calendar sync.</td>
+      </tr>
+      <tr>
+        <td><strong>4. Joining Lesson</strong></td>
+        <td><span class="tag-state tag-before">Syllabus Files</span> Static list of uploaded lesson files in unit accordions.</td>
+        <td><span class="tag-state tag-after">Classroom Hub</span> Upcoming lesson countdown banner, 1-click room entry, live whiteboard, agenda, and in-session notes dock.</td>
+      </tr>
+      <tr>
+        <td><strong>5. Assessment</strong></td>
+        <td><span class="tag-state tag-before">Standalone</span> Quizzes taken in isolation without connection to lessons.</td>
+        <td><span class="tag-state tag-after">Continuous</span> Pre-lesson diagnostic, post-lesson 5-question checkpoint, and adaptive item difficulty scaling.</td>
+      </tr>
+      <tr>
+        <td><strong>6. Results &amp; Reports</strong></td>
+        <td><span class="tag-state tag-before">Score Only</span> Single test percentage view with static recommendations.</td>
+        <td><span class="tag-state tag-after">360° Loop</span> AI explanation tutor for students, curriculum gap heatmaps for teachers, and weekly digests for parents.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ARCHITECTURAL SEQUENCE (SVG) -->
+  <h3 class="section-title">
+    <span class="section-icon" style="background: #e0e7ff; color: #4338ca;">⚡</span>
+    Interaction Architecture: The Continuous Feedback Loop
+  </h3>
+
+  <div class="flow-diagram-container" style="padding: 14px 10px;">
+    <svg width="100%" height="210" viewBox="0 0 720 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Actors -->
+      <rect x="40" y="10" width="100" height="28" rx="6" fill="#1E293B" />
+      <text x="90" y="28" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">Student / Parent</text>
+
+      <rect x="230" y="10" width="110" height="28" rx="6" fill="#2563EB" />
+      <text x="285" y="28" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">EduPath Gateway</text>
+
+      <rect x="430" y="10" width="100" height="28" rx="6" fill="#059669" />
+      <text x="480" y="28" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">Teacher / Class</text>
+
+      <rect x="600" y="10" width="100" height="28" rx="6" fill="#7C3AED" />
+      <text x="650" y="28" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">AI Analytics</text>
+
+      <!-- Lifelines -->
+      <line x1="90" y1="38" x2="90" y2="200" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="3 3" />
+      <line x1="285" y1="38" x2="285" y2="200" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="3 3" />
+      <line x1="480" y1="38" x2="480" y2="200" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="3 3" />
+      <line x1="650" y1="38" x2="650" y2="200" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="3 3" />
+
+      <!-- Step 1: Browse & Book -->
+      <line x1="90" y1="58" x2="285" y2="58" stroke="#2563EB" stroke-width="1.5" />
+      <text x="187" y="52" fill="#1E293B" font-size="9" font-weight="600" text-anchor="middle">1. Select Teacher &amp; Book Slot (Checkout)</text>
+
+      <!-- Step 2: Notify Teacher -->
+      <line x1="285" y1="82" x2="480" y2="82" stroke="#059669" stroke-width="1.5" />
+      <text x="382" y="76" fill="#1E293B" font-size="9" font-weight="600" text-anchor="middle">2. Confirm Booking &amp; Sync Calendar</text>
+
+      <!-- Step 3: Join Classroom -->
+      <line x1="90" y1="108" x2="480" y2="108" stroke="#15803D" stroke-width="1.5" />
+      <text x="285" y="102" fill="#1E293B" font-size="9" font-weight="600" text-anchor="middle">3. 1-Click Join Virtual Classroom &amp; Complete Session</text>
+
+      <!-- Step 4: Take Post-Quiz -->
+      <line x1="90" y1="136" x2="285" y2="136" stroke="#2563EB" stroke-width="1.5" />
+      <text x="187" y="130" fill="#1E293B" font-size="9" font-weight="600" text-anchor="middle">4. Take 5-Question Mastery Checkpoint</text>
+
+      <!-- Step 5: Feed to AI Engine -->
+      <line x1="285" y1="158" x2="650" y2="158" stroke="#7C3AED" stroke-width="1.5" />
+      <text x="467" y="152" fill="#1E293B" font-size="9" font-weight="600" text-anchor="middle">5. Ingest Scores, Accuracy &amp; Time Heuristics</text>
+
+      <!-- Step 6: Multi-channel Reports -->
+      <line x1="650" y1="184" x2="90" y2="184" stroke="#0284C7" stroke-width="1.5" stroke-dasharray="4 4" />
+      <text x="370" y="178" fill="#0284C7" font-size="9" font-weight="700" text-anchor="middle">6. Deliver AI Summary Card to Parent + Remediation Drill to Student</text>
+    </svg>
+  </div>
+
+  <!-- CALLOUT -->
+  <div class="callout">
+    <strong>💡 Design Philosophy Alignment:</strong> 
+    Every interaction follows EduPath’s <em>Modern Educational Minimalism</em> principles — purposeful visual hierarchy, clear next-step calls to action, immediate positive feedback, and reduction of cognitive clutter for young learners and parents alike.
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>EduPath Platform • Confidential Product Design Document</div>
+    <div>Page 2 of 2 • Generated via Antigravity Engine</div>
+  </div>
+
+</body>
+</html>

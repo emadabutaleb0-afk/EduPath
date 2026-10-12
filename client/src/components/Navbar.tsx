@@ -109,6 +109,12 @@ export function Navbar() {
               >
                 Pitch Deck 📑
               </button>
+              <button
+                onClick={() => handleNavigation('/presentation')}
+                className={navLinkClass('/presentation')}
+              >
+                System Slides 🖥️
+              </button>
             </>
           )}
 

@@ -78,9 +78,11 @@ export default function TeacherQuestionBank({ user }: TeacherQuestionBankProps) 
   const fetchQuestions = async () => {
     setIsLoadingQuestions(true);
     try {
-      const res = await fetch('/api/questions');
+      const token = typeof window !== 'undefined' ? localStorage.getItem('edupath_token') : null;
+      const headers: HeadersInit = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const res = await fetch('/api/questions', { headers });
       const data = await res.json();
-      setQuestions(data);
+      setQuestions(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching questions:', error);
       toast.error('Failed to load questions from database');
@@ -90,9 +92,10 @@ export default function TeacherQuestionBank({ user }: TeacherQuestionBankProps) 
   };
 
   // Filter questions matching scope & filters
-  const questionBankQuestions = questions.filter(q => {
-    if (!teacherSubjects.includes(q.subject)) return false;
-    if (q.gradeLevel !== teacherGrade) return false;
+  const questionBankQuestions = (questions || []).filter(q => {
+    if (!q) return false;
+    if (q.subject && !teacherSubjects.includes(q.subject)) return false;
+    if (q.gradeLevel !== undefined && q.gradeLevel !== teacherGrade) return false;
 
     if (questionFilterSubject !== 'All' && q.subject !== questionFilterSubject) return false;
     if (questionFilterDifficulty !== 'All' && q.difficulty !== questionFilterDifficulty) return false;
@@ -100,8 +103,8 @@ export default function TeacherQuestionBank({ user }: TeacherQuestionBankProps) 
 
     if (questionSearch.trim()) {
       const query = questionSearch.toLowerCase();
-      const textMatch = q.text.toLowerCase().includes(query);
-      const explanationMatch = q.explanation.toLowerCase().includes(query);
+      const textMatch = (q.text || '').toLowerCase().includes(query);
+      const explanationMatch = (q.explanation || '').toLowerCase().includes(query);
       return textMatch || explanationMatch;
     }
 
@@ -468,7 +471,7 @@ export default function TeacherQuestionBank({ user }: TeacherQuestionBankProps) 
                       <Label className="font-semibold">Question Type</Label>
                       <Select value={newQuestionType} onValueChange={(val: any) => {
                         setNewQuestionType(val);
-                        setNewQuestionCorrectAns('0');
+                        setNewQuestionCorrectAns(val === 'mcq' ? '0' : 'true');
                       }}>
                         <SelectTrigger>
                           <SelectValue />
@@ -744,7 +747,7 @@ export default function TeacherQuestionBank({ user }: TeacherQuestionBankProps) 
                         </Button>
                       </div>
 
-                      {q.type === 'mcq' && q.options && (
+                      {q.type === 'mcq' && Array.isArray(q.options) && q.options.length > 0 && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                           {q.options.map((opt, oIdx) => {
                             const isCorrect = typeof q.correctAnswer === 'number' 
@@ -770,7 +773,7 @@ export default function TeacherQuestionBank({ user }: TeacherQuestionBankProps) 
                         <div className="text-xs text-muted-foreground">
                           <span className="text-muted-foreground">Correct Answer: </span>
                           <span className="font-bold text-green-600 dark:text-green-400 capitalize bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-md">
-                            {q.correctAnswer.toString()}
+                            {String(q.correctAnswer ?? 'N/A')}
                           </span>
                         </div>
                       )}

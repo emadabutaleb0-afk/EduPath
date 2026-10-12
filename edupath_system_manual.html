@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPath — Official System Manual & Operational Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 16mm 14mm 16mm 14mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.55;
+      font-size: 12px;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    code, pre {
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Page Breaks */
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      padding-top: 8px;
+    }
+
+    /* Document Cover / Header */
+    .cover-container {
+      padding: 40px 20px 20px 20px;
+      text-align: center;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 25px;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+
+    .cover-logo {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #2563eb, #10b981);
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+    }
+
+    .cover-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .cover-subtitle {
+      font-size: 14px;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      line-height: 1.5;
+    }
+
+    .meta-bar {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 11px;
+      color: #64748b;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+
+    .meta-item strong {
+      color: #0f172a;
+    }
+
+    /* Role Header Banners */
+    .role-banner {
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 15px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #e2e8f0;
+    }
+
+    .banner-student { background: linear-gradient(135deg, #eff6ff, #f0fdf4); border-color: #bfdbfe; }
+    .banner-teacher { background: linear-gradient(135deg, #fef3c7, #fefce8); border-color: #fde68a; }
+    .banner-parent  { background: linear-gradient(135deg, #fdf4ff, #fae8ff); border-color: #f5d0fe; }
+    .banner-admin   { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-color: #cbd5e1; }
+
+    .role-title {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .role-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tag-blue { background: #2563eb; color: #fff; }
+    .tag-amber { background: #d97706; color: #fff; }
+    .tag-purple { background: #9333ea; color: #fff; }
+    .tag-slate { background: #334155; color: #fff; }
+
+    /* Section Styles */
+    .section-block {
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1.5px solid #f1f5f9;
+      padding-bottom: 4px;
+    }
+
+    .step-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .step-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-heading {
+      font-weight: 700;
+      font-size: 12px;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .step-desc {
+      font-size: 11px;
+      color: #475569;
+      line-height: 1.45;
+    }
+
+    /* Feature Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .feature-card-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feature-card-desc {
+      font-size: 10.5px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    /* Tables */
+    .manual-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 8px 0 14px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .manual-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      text-align: left;
+      padding: 7px 10px;
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .manual-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.4;
+    }
+
+    .manual-table tr:nth-child(even) td {
+      background: #fafafa;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin: 10px 0;
+      font-size: 11px;
+      line-height: 1.45;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .callout-info {
+      background: #eff6ff;
+      border-left: 3.5px solid #2563eb;
+      color: #1e40af;
+    }
+
+    .callout-warning {
+      background: #fffbeb;
+      border-left: 3.5px solid #f59e0b;
+      color: #92400e;
+    }
+
+    .callout-success {
+      background: #f0fdf4;
+      border-left: 3.5px solid #10b981;
+      color: #065f46;
+    }
+
+    /* Header / Footer */
+    .doc-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      color: #94a3b8;
+    }
+
+    .badge-route {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER / HEADER -->
+  <div class="cover-container">
+    <div class="cover-logo">E</div>
+    <div class="cover-badge">Official Standard Operational Procedures</div>
+    <h1 class="cover-title">EduPath Platform System Manual</h1>
+    <p class="cover-subtitle">
+      A comprehensive guide detailing platform features, workflows, and best practices across all four stakeholder roles: 
+      <strong>Student</strong>, <strong>Teacher</strong>, <strong>Parent</strong>, and <strong>Administrator</strong>.
+    </p>
+
+    <div class="meta-bar">
+      <div class="meta-item">Version: <strong>3.0 Production</strong></div>
+      <div class="meta-item">Date: <strong>October 2026</strong></div>
+      <div class="meta-item">Platform: <strong>EduPath AI Learning Engine</strong></div>
+      <div class="meta-item">Audience: <strong>All Stakeholders</strong></div>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS / SUMMARY OVERVIEW -->
+  <div class="section-block">
+    <h3 class="section-title">🧭 Table of Contents &amp; Architectural Ecosystem</h3>
+    <div class="grid-2">
+      <div class="feature-card">
+        <div class="feature-card-title">👨‍🎓 Part 1: Student (User) Manual</div>
+        <div class="feature-card-desc">
+          Covers Registration, Diagnostic Placement, Finding &amp; Booking Teachers, Checkout &amp; Passes, Joining the Live Classroom, Adaptive Testing, and Progress Insights.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">👨‍🏫 Part 2: Teacher Manual</div>
+        <div class="feature-card-desc">
+          Covers Profile &amp; Pricing Setup, Question Bank Management, Test Generation, Real-Time Cheating Detection Heuristics, Live Classroom Tutoring, and Earnings Ledgers.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">👨‍👩‍👧 Part 3: Parent Manual</div>
+        <div class="feature-card-desc">
+          Covers Student Account Linkage, Weekly/Monthly AI Progress Digests, Subject Mastery Heatmaps, Activity Feeds, and Direct Teacher Collaboration.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">🛡️ Part 4: Administrator Manual</div>
+        <div class="feature-card-desc">
+          Covers User Moderation, Academic Registries (Subjects &amp; Grades), Question Approval, Theme &amp; Branding Customization, and DB Mode Configuration (Mock vs. PostgreSQL).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PART 1: STUDENT USER MANUAL -->
+  <!-- ========================================================================= -->
+  <div class="role-banner banner-student">
+    <div>
+      <div class="role-title">👨‍🎓 Part 1: Student (User) Operational Manual</div>
+      <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+        Core workflows for learning, booking instructors, attending live classes, and tracking performance.
+      </div>
+    </div>
+    <span class="role-tag tag-blue">Role: Student</span>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">1.1 Account Setup &amp; Diagnostic Onboarding</h3>
+    <p style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+      Getting started on EduPath begins with account creation and baseline calibration:
+    </p>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-heading">Registration (<span class="badge-route">/register</span>)</div>
+          <div class="step-desc">Select <strong>Student</strong> role, choose your registered Grade Level (Grades 4–12), provide your name and email, and set a password.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-heading">Diagnostic Placement Quick-Check (<span class="badge-route">/test-enhanced/test-005</span>)</div>
+          <div class="step-desc">Immediately take or schedule the 5-minute adaptive placement assessment. The AI engine evaluates foundational grasp to configure your personalized dashboard recommendations.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-heading">Parent Account Linkage</div>
+          <div class="step-desc">Share your registered student email with your parents so they can pair accounts and receive weekly progress digests.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">1.2 Selecting Teachers, Booking &amp; Payments</h3>
+    <table class="manual-table">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Location</th>
+          <th>Process &amp; Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Browse Directory</strong></td>
+          <td><span class="badge-route">/teachers</span></td>
+          <td>Filter instructors by subject area (Mathematics, Science, English, etc.), view verified ratings (4.9 ★), and compare rates ($35/session).</td>
+        </tr>
+        <tr>
+          <td><strong>Schedule Session</strong></td>
+          <td>Modal on Teacher Card</td>
+          <td>Click <strong>"Book Lesson"</strong> to open the Booking Modal. Choose a custom lesson focus, date, and 45-minute time slot.</td>
+        </tr>
+        <tr>
+          <td><strong>Payment Tiers</strong></td>
+          <td>Checkout Step 2</td>
+          <td>
+            • <strong>Single Lesson:</strong> $35.00 one-time.<br/>
+            • <strong>Monthly Study Pass:</strong> $119.00 (4 lessons, save 15%).<br/>
+            • <strong>Study Pass Credit:</strong> $0.00 (auto-deducts 1 remaining credit).
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Confirmation &amp; Calendar</strong></td>
+          <td>Confirmation Step 3</td>
+          <td>Receive an instant receipt ID and click <strong>"Add to Calendar (.ics)"</strong> to sync with Apple, Google, or Outlook calendars.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">1.3 Attending Live Lessons (<span class="badge-route">/classroom/:lessonId</span>)</h3>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-card-title">🎥 Live WebRTC Stage</div>
+        <div class="feature-card-desc">Simulated 1080p stream with teacher video, student PiP camera, mic controls, screen share, and raise-hand notifications.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">🎨 Digital Whiteboard</div>
+        <div class="feature-card-desc">Real-time collaborative canvas with colored markers, formula demonstrations, and eraser tools for step-by-step problem solving.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">📝 In-Session Notes Pad</div>
+        <div class="feature-card-desc">Private scratchpad auto-saves student notes locally with a 1-click <strong>Export .txt</strong> download button.</div>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      <div>💡</div>
+      <div><strong>Post-Lesson Assessment Bridge:</strong> At the conclusion of each live session, click <strong>"Finish &amp; Launch Checkpoint"</strong> to take a targeted 5-question test that validates concept retention and updates your mastery graph.</div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ========================================================================= -->
+  <!-- PART 2: TEACHER USER MANUAL -->
+  <!-- ========================================================================= -->
+  <div class="role-banner banner-teacher">
+    <div>
+      <div class="role-title">👨‍🏫 Part 2: Teacher Operational Manual</div>
+      <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+        Curriculum authoring, question banks, cheating surveillance, live tutoring, and gradebooks.
+      </div>
+    </div>
+    <span class="role-tag tag-amber">Role: Teacher</span>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">2.1 Teacher Dashboard Hub (<span class="badge-route">/teacher-dashboard</span>)</h3>
+    <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
+      The Teacher Dashboard provides a unified command center organized into distinct tabs:
+    </p>
+    <table class="manual-table">
+      <thead>
+        <tr>
+          <th>Dashboard Tab</th>
+          <th>Capabilities</th>
+          <th>Key Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Overview</strong></td>
+          <td>Active student enrollments, upcoming scheduled bookings, monthly revenue charts, and recent earnings ledger.</td>
+          <td>Review weekly lesson load, launch scheduled classroom rooms, track student retention.</td>
+        </tr>
+        <tr>
+          <td><strong>Question Bank</strong></td>
+          <td>Search, filter, and author MCQ and True/False questions by subject, grade level, difficulty, and weight.</td>
+          <td>Click <strong>"Add Question"</strong>, configure explanation text, or trigger AI Question Generation.</td>
+        </tr>
+        <tr>
+          <td><strong>Test Builder</strong></td>
+          <td>Assemble assessment templates from question banks or generate adaptive multi-tier test configurations.</td>
+          <td>Set test duration, passing thresholds, adaptive difficulty toggles, and publish quizzes.</td>
+        </tr>
+        <tr>
+          <td><strong>Curriculum Units</strong></td>
+          <td>Organize subjects into units and lessons; upload video links and downloadable PDF materials.</td>
+          <td>Attach slides and study materials accessed by enrolled students in their syllabus feed.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">2.2 AI Cheating Detection &amp; Integrity (<span class="badge-route">/admin/cheating-detection</span>)</h3>
+    <p style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+      EduPath employs non-invasive heuristic tracking during student assessment sessions:
+    </p>
+    <div class="grid-2">
+      <div class="feature-card">
+        <div class="feature-card-title">🔍 Monitored Triggers</div>
+        <div class="feature-card-desc">
+          • <strong>Tab-Switching:</strong> Records window blur events when students switch screens.<br/>
+          • <strong>Pacing Anomalies:</strong> Flags answers submitted in &lt;3 seconds on hard items.<br/>
+          • <strong>Score Jumps:</strong> Identifies uncharacteristic performance spikes.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">⚖️ Educator Actions</div>
+        <div class="feature-card-desc">
+          Instructors can review flagged sessions, view the confidence score (0–100%), inspect timeline logs, and mark flags as <strong>"Reviewed"</strong>, <strong>"Cleared"</strong>, or <strong>"Flagged for Retest"</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">2.3 Conducting Live Tutoring &amp; Managing Payouts</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-heading">Entering Room</div>
+          <div class="step-desc">Launch the scheduled session from your Overview calendar (<span class="badge-route">/classroom/:bookingId</span>). Confirm camera and mic permissions.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-heading">Guiding the Agenda</div>
+          <div class="step-desc">Check off learning goals in real-time on the right sidebar agenda. Use the shared whiteboard to demonstrate equations.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-heading">Session Payout Ledger</div>
+          <div class="step-desc">All completed tutoring sessions automatically credit your teacher balance. View your monthly earnings distribution and ledger under Dashboard &gt; Overview &gt; Ledger.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ========================================================================= -->
+  <!-- PART 3: PARENT USER MANUAL -->
+  <!-- ========================================================================= -->
+  <div class="role-banner banner-parent">
+    <div>
+      <div class="role-title">👨‍👩‍👧 Part 3: Parent Operational Manual</div>
+      <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+        Student monitoring, AI-generated summary digests, progress milestones, and alerts.
+      </div>
+    </div>
+    <span class="role-tag tag-purple">Role: Parent</span>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">3.1 Parent Dashboard Overview (<span class="badge-route">/parent-dashboard</span>)</h3>
+    <p style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+      The Parent Dashboard gives guardians complete transparency over their children’s academic journey without technical jargon:
+    </p>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-card-title">🔄 Child Switcher</div>
+        <div class="feature-card-desc">Easily switch between linked students (e.g., Alex Johnson Grade 8, Jordan Johnson Grade 6) to view individual statistics.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">📈 Mastery Heatmaps</div>
+        <div class="feature-card-desc">Visual progress bars across Mathematics, Science, English, and History showing current competency percentages.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-title">⚡ Live Activity Stream</div>
+        <div class="feature-card-desc">Real-time log of tests started, completed quizzes, streak milestones, and live tutoring sessions attended.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">3.2 AI Parent Report Summarizer (<span class="badge-route">/ai/parent-reports</span>)</h3>
+    <p style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+      EduPath translates complex psychometric quiz telemetry into natural-language parent summaries:
+    </p>
+    <table class="manual-table">
+      <thead>
+        <tr>
+          <th>Report Section</th>
+          <th>What It Explains</th>
+          <th>Parent Benefit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Executive Summary</strong></td>
+          <td>A 3-sentence plain-English breakdown of the student’s weekly effort and achievements.</td>
+          <td>Quick grasp of overall trajectory without reading raw test sheets.</td>
+        </tr>
+        <tr>
+          <td><strong>Key Highlights</strong></td>
+          <td>Bullet points celebrating mastered subjects, study streaks, and high accuracy areas.</td>
+          <td>Immediate positive reinforcement points for parents to praise.</td>
+        </tr>
+        <tr>
+          <td><strong>Areas of Concern</strong></td>
+          <td>Specific conceptual gaps (e.g., *"Word problems involving two-step inequalities"*).</td>
+          <td>Identifies exactly where the student needs guidance.</td>
+        </tr>
+        <tr>
+          <td><strong>Actionable Next Steps</strong></td>
+          <td>Concrete recommendations (e.g., *"Schedule 1 tutoring session with Teacher Demo"*).</td>
+          <td>Eliminates guesswork about how to support the child at home.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout callout-success">
+      <div>📥</div>
+      <div><strong>Export &amp; Share:</strong> Parents can click <strong>"Export as PDF"</strong> to print official report cards or <strong>"Email Report"</strong> to forward copies to school counselors.</div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PART 4: ADMINISTRATOR USER MANUAL -->
+  <!-- ========================================================================= -->
+  <div class="role-banner banner-admin" style="margin-top: 22px;">
+    <div>
+      <div class="role-title">🛡️ Part 4: Administrator Operational Manual</div>
+      <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+        System architecture, user roles, content versions, registries, themes, and database operations.
+      </div>
+    </div>
+    <span class="role-tag tag-slate">Role: Admin</span>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">4.1 Admin Command Center &amp; Management Routes</h3>
+    <table class="manual-table">
+      <thead>
+        <tr>
+          <th>Management Module</th>
+          <th>Route</th>
+          <th>Administrative Function</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Admin Dashboard</strong></td>
+          <td><span class="badge-route">/admin-dashboard</span></td>
+          <td>System KPIs: Total users, question count, completed tests, and server health.</td>
+        </tr>
+        <tr>
+          <td><strong>User Accounts &amp; Roles</strong></td>
+          <td><span class="badge-route">/admin/users</span></td>
+          <td>Activate/deactivate accounts, change user roles (Student ↔ Teacher ↔ Admin), edit grade levels.</td>
+        </tr>
+        <tr>
+          <td><strong>Question Bank Admin</strong></td>
+          <td><span class="badge-route">/admin/questions</span></td>
+          <td>Global question repository, bulk status reviews, answer explanation verification.</td>
+        </tr>
+        <tr>
+          <td><strong>Bulk Question Import</strong></td>
+          <td><span class="badge-route">/admin/bulk-import</span></td>
+          <td>Import hundreds of questions via standardized JSON/CSV templates with syntax validation.</td>
+        </tr>
+        <tr>
+          <td><strong>Academic Registries</strong></td>
+          <td><span class="badge-route">/admin/platform-settings</span></td>
+          <td>Add or remove platform-wide Subjects and Grade Levels without code modifications.</td>
+        </tr>
+        <tr>
+          <td><strong>Content Customization</strong></td>
+          <td><span class="badge-route">/admin/customization</span></td>
+          <td>Configure platform branding, hero titles, diagnostic CTA toggles, and color palettes.</td>
+        </tr>
+        <tr>
+          <td><strong>Database Sync &amp; Drivers</strong></td>
+          <td><span class="badge-route">/admin/system</span></td>
+          <td>Toggle active database mode (Persistent JSON vs. PostgreSQL), run SQL seed transactions.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h3 class="section-title">4.2 System Operations &amp; Database Migration Guide</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-heading">Database Modes</div>
+          <div class="step-desc">EduPath includes dual-engine persistence: <strong>Persistent Local JSON</strong> (zero-dependency local development and mock resilience) and <strong>PostgreSQL</strong> (enterprise production).</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-heading">Switching Modes</div>
+          <div class="step-desc">Admins can toggle the driver in <span class="badge-route">/admin/system</span> or configure <span class="badge-route">DATABASE_URL</span> in <span class="badge-route">.env</span>. The client auto-hydrates state seamlessly via <span class="badge-route">hydrateDatabaseState()</span>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div>EduPath Platform • Official Comprehensive System Manual</div>
+    <div>Generated October 2026 • Confidential &amp; Proprietary Documentation</div>
+  </div>
+
+</body>
+</html>

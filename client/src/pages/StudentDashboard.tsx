@@ -3,8 +3,8 @@ import { useLocation } from 'wouter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
-import { mockTests, mockTestResults, getTestsByGradeLevel, availableSubjects, availableGrades, Question, TestResult, mockEnrollments, mockAllUsers } from '@/lib/mockData';
-import { BarChart3, BookOpen, TrendingUp, Clock, CheckCircle2, AlertCircle, Brain, Target, Lightbulb, TrendingDown, Atom, Compass, History, HelpCircle, ArrowRight, Video, File, ArrowUpRight, Loader2, Sparkles, CheckCircle, XCircle, GraduationCap, Calendar, Trophy, Flame } from 'lucide-react';
+import { mockTests, mockTestResults, getTestsByGradeLevel, availableSubjects, availableGrades, Question, TestResult, mockEnrollments, mockAllUsers, mockBookings, mockStudentPasses, LessonBooking, StudentPass } from '@/lib/mockData';
+import { BarChart3, BookOpen, TrendingUp, Clock, CheckCircle2, AlertCircle, Brain, Target, Lightbulb, TrendingDown, Atom, Compass, History, HelpCircle, ArrowRight, Video, File, ArrowUpRight, Loader2, Sparkles, CheckCircle, XCircle, GraduationCap, Calendar, Trophy, Flame, PlayCircle, CalendarPlus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { getStudentInsights } from '@/lib/aiAnalysis';
@@ -12,7 +12,8 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { saveResultToDB, hydrateDatabaseState, unenrollStudent } from '@/lib/dbSync';
+import { saveResultToDB, hydrateDatabaseState, unenrollStudent, cancelBookingInDB } from '@/lib/dbSync';
+import { BookingCheckoutModal } from '@/components/BookingCheckoutModal';
 import { toast } from 'sonner';
 
 const getSubjectIcon = (sub: string) => {
@@ -495,10 +496,23 @@ export default function StudentDashboard() {
   };
 
   const [dashboardEnrollments, setDashboardEnrollments] = useState<any[]>([]);
+  const [studentBookings, setStudentBookings] = useState<LessonBooking[]>([]);
+  const [activePass, setActivePass] = useState<StudentPass | null>(null);
+  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [teacherForBooking, setTeacherForBooking] = useState<any>(null);
 
   useEffect(() => {
     setDashboardEnrollments(mockEnrollments.filter(e => e.studentId === user.id));
-  }, [user.id, mockEnrollments.length]);
+    setStudentBookings(mockBookings.filter(b => b.studentId === user.id));
+    const pass = mockStudentPasses.find(p => p.studentId === user.id && p.status === 'active' && p.remainingCredits > 0);
+    setActivePass(pass || null);
+  }, [user.id, mockEnrollments.length, mockBookings.length, mockStudentPasses.length]);
+
+  const handleCancelBooking = (bookingId: string) => {
+    cancelBookingInDB(bookingId);
+    setStudentBookings(mockBookings.filter(b => b.studentId === user.id));
+    toast.info('Lesson booking cancelled.');
+  };
 
   const handleDashboardUnenroll = async (teacherId: string, subject: string) => {
     try {
@@ -862,13 +876,159 @@ export default function StudentDashboard() {
                 </CardContent>
               </Card>
 
+              {/* Upcoming Lessons & Virtual Classroom Sessions */}
+              <Card className="bg-card border border-border/75 shadow-sm rounded-2xl text-left overflow-hidden">
+                <CardHeader className="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border/60 bg-muted/10">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-base font-bold flex items-center gap-2">
+                        <Video className="w-4.5 h-4.5 text-primary" />
+                        Upcoming Lessons &amp; Live Sessions
+                      </CardTitle>
+                      {activePass && (
+                        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30 text-[10px] font-bold">
+                          Study Pass: {activePass.remainingCredits} Credits
+                        </Badge>
+                      )}
+                    </div>
+                    <CardDescription className="text-xs">
+                      Join scheduled 1-on-1 virtual classrooms or book upcoming tutoring drills.
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const defaultTeacher = mockAllUsers.find(u => u.role === 'teacher' && u.status === 'active') || null;
+                        setTeacherForBooking(defaultTeacher);
+                        setIsBookModalOpen(true);
+                      }}
+                      className="text-xs font-semibold h-8 border-border rounded-xl hover:bg-muted/30"
+                    >
+                      <CalendarPlus className="w-3.5 h-3.5 mr-1 text-primary" /> Book Lesson
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-5 space-y-4">
+                  {studentBookings.filter(b => b.status === 'scheduled' || b.status === 'live').length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {studentBookings
+                        .filter(b => b.status === 'scheduled' || b.status === 'live')
+                        .map(b => (
+                          <div
+                            key={b.id}
+                            className="p-4 rounded-2xl border border-border/80 bg-background/60 dark:bg-card/45 hover:border-primary/40 transition-all flex flex-col justify-between space-y-3"
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <Badge variant="outline" className={`flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 border ${getSubjectColor(b.subject)}`}>
+                                  {getSubjectIcon(b.subject)}
+                                  {b.subject}
+                                </Badge>
+                                <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-0 text-[10px] font-bold">
+                                  {b.scheduledDate === new Date().toISOString().split('T')[0] ? 'TODAY' : b.scheduledDate}
+                                </Badge>
+                              </div>
+                              <h4 className="font-bold text-sm text-foreground leading-snug line-clamp-1">{b.lessonTitle}</h4>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <img
+                                  src={b.teacherAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(b.teacherName)}`}
+                                  alt={b.teacherName}
+                                  className="w-5 h-5 rounded-full object-cover border border-border"
+                                />
+                                <span className="font-semibold text-foreground truncate">{b.teacherName}</span>
+                                <span>•</span>
+                                <span className="font-mono text-[11px] font-bold text-primary flex items-center gap-1">
+                                  <Clock className="w-3 h-3" /> {b.scheduledTime}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="pt-2 border-t border-border/40 flex items-center justify-between gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleCancelBooking(b.id)}
+                                className="text-[10px] h-7 px-2 text-muted-foreground hover:text-red-500"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => navigate(`/classroom/${b.id}`)}
+                                className="bg-primary hover:bg-primary/90 text-white font-bold text-[11px] h-8 px-3.5 rounded-xl hover-lift shadow-sm shadow-primary/20"
+                              >
+                                <PlayCircle className="w-3.5 h-3.5 mr-1.5" /> Enter Classroom
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="py-8 text-center border border-dashed border-border rounded-2xl space-y-2.5 bg-muted/10">
+                      <Video className="w-8 h-8 text-muted-foreground/30 mx-auto" />
+                      <p className="font-bold text-muted-foreground text-xs">No active live lessons scheduled</p>
+                      <p className="text-[11px] text-muted-foreground max-w-xs mx-auto leading-normal">
+                        Book a 1-on-1 session with a certified educator to strengthen weak concepts.
+                      </p>
+                      <Button
+                        size="sm"
+                        onClick={() => navigate('/teachers')}
+                        className="text-xs h-8 rounded-xl font-bold bg-primary text-white hover-lift"
+                      >
+                        Explore Instructors
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Completed Sessions with Post-Lesson Checkpoint CTAs */}
+                  {studentBookings.filter(b => b.status === 'completed').length > 0 && (
+                    <div className="pt-2 border-t border-border/40">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-2">
+                        Completed Sessions &amp; Post-Lesson Checkpoints:
+                      </span>
+                      <div className="space-y-2">
+                        {studentBookings
+                          .filter(b => b.status === 'completed')
+                          .slice(0, 2)
+                          .map(cb => (
+                            <div
+                              key={cb.id}
+                              className="p-3 rounded-xl border border-border/60 bg-muted/15 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600">
+                                  <CheckCircle2 className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <span className="font-bold text-foreground block">{cb.lessonTitle}</span>
+                                  <span className="text-[10px] text-muted-foreground">Instructor: {cb.teacherName} • Completed {cb.scheduledDate}</span>
+                                </div>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => navigate(`/test-enhanced/${cb.checkpointTestId || 'test-001'}`)}
+                                className="h-7 text-[10px] font-bold border-primary/30 text-primary hover:bg-primary/10 rounded-lg shrink-0"
+                              >
+                                Take 5-Min Checkpoint Quiz <ArrowRight className="w-3 h-3 ml-1" />
+                              </Button>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Enrolled Teachers & Subject Assignments */}
               <Card className="bg-card border border-border/75 shadow-sm rounded-2xl text-left overflow-hidden">
                 <CardHeader className="p-5 flex flex-row items-center justify-between gap-4 border-b border-border/60 bg-muted/10">
                   <div className="space-y-0.5">
                     <CardTitle className="text-base font-bold flex items-center gap-2">
                       <GraduationCap className="w-4.5 h-4.5 text-primary" />
-                      Class Teachers & Subject Enrollments
+                      Class Teachers &amp; Subject Enrollments
                     </CardTitle>
                     <CardDescription className="text-xs">
                       Monitor active learning links assigned for your class.
@@ -1444,6 +1604,16 @@ export default function StudentDashboard() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Booking Checkout Modal */}
+      <BookingCheckoutModal
+        isOpen={isBookModalOpen}
+        onClose={() => setIsBookModalOpen(false)}
+        teacher={teacherForBooking}
+        onBookingSuccess={() => {
+          setStudentBookings(mockBookings.filter(b => b.studentId === user.id));
+        }}
+      />
     </div>
   );
 }

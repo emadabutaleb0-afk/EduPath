@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPath — Detailed Teacher Operational Tutorial &amp; Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 15mm 14mm 15mm 14mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.55;
+      font-size: 11.5px;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    code, pre {
+      font-family: 'Fira Code', monospace;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      padding-top: 6px;
+    }
+
+    /* Cover / Hero Header */
+    .hero-header {
+      background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 50%, #f0fdf4 100%);
+      border: 1.5px solid #fde68a;
+      border-radius: 16px;
+      padding: 22px 20px;
+      margin-bottom: 18px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #d97706;
+      color: #ffffff;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: 23px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .hero-subtitle {
+      font-size: 12.5px;
+      color: #475569;
+      max-width: 640px;
+      line-height: 1.5;
+    }
+
+    .meta-pills {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(253, 230, 138, 0.7);
+      font-size: 10.5px;
+      color: #64748b;
+    }
+
+    .meta-pills strong {
+      color: #0f172a;
+    }
+
+    /* Step Card Container */
+    .tutorial-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 13px 15px;
+      margin-bottom: 13px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 9px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 7px;
+    }
+
+    .step-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .num-amber { background: #fef3c7; color: #b45309; }
+    .num-blue  { background: #dbeafe; color: #1e40af; }
+    .num-green { background: #dcfce7; color: #15803d; }
+    .num-purple{ background: #fae8ff; color: #86198f; }
+
+    .card-title-text {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .route-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 9.5px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #f1f5f9;
+      color: #334155;
+      margin-left: auto;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Sub-grid Elements */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin: 8px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .sub-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .sub-box-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+    }
+
+    .sub-box-text {
+      font-size: 10px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    /* Tables */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .styled-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 9px;
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .styled-table td {
+      padding: 6px 9px;
+      border-bottom: 1px solid #f1f5f9;
+      line-height: 1.4;
+      vertical-align: top;
+    }
+
+    /* Callouts */
+    .pro-tip {
+      background: #fefce8;
+      border-left: 3.5px solid #d97706;
+      border-radius: 0 8px 8px 0;
+      padding: 7px 11px;
+      margin: 7px 0;
+      font-size: 10.5px;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-tip {
+      background: #eff6ff;
+      border-left: 3.5px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      padding: 7px 11px;
+      margin: 7px 0;
+      font-size: 10.5px;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Checklist */
+    .action-steps {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0;
+      display: grid;
+      gap: 5px;
+    }
+
+    .action-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 10.5px;
+      color: #334155;
+    }
+
+    .step-check {
+      color: #10b981;
+      font-weight: bold;
+      margin-top: 1px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 7px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO COVER BANNER -->
+  <div class="hero-header">
+    <div class="hero-badge">👨‍🏫 Educator Operational Guide</div>
+    <h1 class="hero-title">EduPath Teacher Mastery Handbook</h1>
+    <p class="hero-subtitle">
+      A comprehensive guide for instructors on authoring questions, assembling adaptive assessments, 
+      conducting live 1-on-1 tutoring sessions, investigating integrity flags, and managing earnings.
+    </p>
+
+    <div class="meta-pills">
+      <div>Role: <strong>Teacher / Tutor</strong></div>
+      <div>Main Hub: <strong>/teacher-dashboard</strong></div>
+      <div>Integrity Engine: <strong>AI Cheating Heuristics</strong></div>
+      <div>Classroom: <strong>HD WebRTC Virtual Room</strong></div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: DASHBOARD COMMAND CENTER -->
+  <div class="tutorial-card">
+    <div class="card-header">
+      <div class="step-badge num-amber">1</div>
+      <div class="card-title-text">Navigating Your Educator Command Center</div>
+      <span class="route-badge">/teacher-dashboard</span>
+    </div>
+
+    <p style="font-size: 11px; color: #475569; margin-bottom: 7px;">
+      The Teacher Dashboard provides a five-tab command center designed for complete instructional autonomy:
+    </p>
+
+    <div class="grid-3">
+      <div class="sub-box">
+        <div class="sub-box-title">📊 1. Overview Hub</div>
+        <div class="sub-box-text">View enrolled students, scheduled lesson counts, weekly hours, revenue charts, and the monthly payout ledger.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">❓ 2. Question Bank</div>
+        <div class="sub-box-text">Author, edit, tag, and organize MCQ and True/False questions by subject, grade level, difficulty, and weight.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">📝 3. Test Builder</div>
+        <div class="sub-box-text">Assemble custom assessments, configure passing thresholds, set timed durations, and enable adaptive scaling.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="sub-box">
+        <div class="sub-box-title">📚 4. Curriculum Units &amp; Lessons</div>
+        <div class="sub-box-text">Structure course units, organize lesson order, and upload YouTube videos or printable study guide PDFs.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">💳 5. Billing &amp; Tutoring Payouts</div>
+        <div class="sub-box-text">Track 1-on-1 session revenues ($35/session), study pass distributions, and monthly direct deposit payouts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: AUTHORING QUESTIONS & AI GENERATOR -->
+  <div class="tutorial-card">
+    <div class="card-header">
+      <div class="step-badge num-blue">2</div>
+      <div class="card-title-text">Authoring Question Banks &amp; AI Generation</div>
+      <span class="route-badge">/ai/question-generator</span>
+    </div>
+
+    <p style="font-size: 11px; color: #475569; margin-bottom: 7px;">
+      Build high-quality assessment banks manually or supercharge creation using the AI Question Generator:
+    </p>
+
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Configuration Parameters</th>
+          <th>Best Practice &amp; Nuance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Manual Question Entry</strong></td>
+          <td>Subject, Grade (4–12), Difficulty (Easy/Medium/Hard), Weight (1.00–2.00), Options, Correct Key, and Explanation.</td>
+          <td>Always provide rich explanations. The AI study tutor uses your explanations to coach students who miss the question.</td>
+        </tr>
+        <tr>
+          <td><strong>AI Generator Tool</strong></td>
+          <td>Topic prompt (e.g. *"Photosynthesis light reactions"*), Grade Level, Target Quantity (5–20 Qs), and Cognitive Level.</td>
+          <td>The engine leverages Puter AI to generate curriculum-aligned distractors with zero hallucination. Review and 1-click import into bank.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-tip">
+      <span>💡</span>
+      <span><strong>Weighted Scoring:</strong> Set weight = 1.00 for basic recall, 1.50 for multi-step math, and 2.00 for high-complexity analytical items.</span>
+    </div>
+  </div>
+
+  <!-- SECTION 3: BUILDING ADAPTIVE TESTS -->
+  <div class="tutorial-card">
+    <div class="card-header">
+      <div class="step-badge num-green">3</div>
+      <div class="card-title-text">Assembling Tests &amp; Configuring the Adaptive Engine</div>
+      <span class="route-badge">Dashboard &gt; Test Builder</span>
+    </div>
+
+    <p style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+      How to configure assessments that dynamically scale difficulty based on student responses:
+    </p>
+
+    <div class="grid-2">
+      <div class="sub-box">
+        <div class="sub-box-title">⚙️ Standard Fixed Tests</div>
+        <div class="sub-box-text">
+          Select questions from your bank, specify total duration (e.g., 30 mins) and passing score (e.g., 70%). Ideal for mid-term exams and chapter reviews.
+        </div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">🧠 Adaptive Smart Engine</div>
+        <div class="sub-box-text">
+          Toggle <strong>"Is Adaptive"</strong> on. The engine starts students on a medium item: consecutive correct answers elevate difficulty to hard; incorrect answers scaffold down to easy.
+        </div>
+      </div>
+    </div>
+
+    <ul class="action-steps">
+      <li class="action-step">
+        <span class="step-check">✓</span>
+        <span><strong>Placement Tests:</strong> Toggle <em>isPlacementTest</em> to generate comprehensive subject diagnostics with automated grade recommendations.</span>
+      </li>
+      <li class="action-step">
+        <span class="step-check">✓</span>
+        <span><strong>Publishing:</strong> Newly published tests immediately appear in enrolled students’ recommended assessment queues.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 4: CONDUCTING LIVE TUTORING -->
+  <div class="tutorial-card">
+    <div class="card-header">
+      <div class="step-badge num-amber">4</div>
+      <div class="card-title-text">Conducting Live Tutoring in the Virtual Classroom</div>
+      <span class="route-badge">/classroom/:lessonId</span>
+    </div>
+
+    <p style="font-size: 11px; color: #475569; margin-bottom: 7px;">
+      When students book a 1-on-1 session via the marketplace, launch the room directly from your Overview schedule:
+    </p>
+
+    <div class="grid-3">
+      <div class="sub-box">
+        <div class="sub-box-title">🎥 Video &amp; Screen Sharing</div>
+        <div class="sub-box-text">Launch your webcam, unmute mic, and share application windows or problem set PDF worksheets.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">🎨 Interactive Whiteboard</div>
+        <div class="sub-box-text">Draw geometric models, write algebraic steps, change marker colors (Blue, Green, Red, Black), or clear canvas.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">📖 Synchronized Slides</div>
+        <div class="sub-box-text">Step through unit slides with next/prev buttons to ensure the student follows your presentation pacing.</div>
+      </div>
+    </div>
+
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Classroom Dock</th>
+          <th>Teacher Role</th>
+          <th>Student Experience</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Agenda Checklist</strong></td>
+          <td>Click topics as you finish them (Warm-up, Theory, Practice, Q&amp;A).</td>
+          <td>Student sees checkmarks appear live, keeping the session structured and transparent.</td>
+        </tr>
+        <tr>
+          <td><strong>Live Q&amp;A Chat</strong></td>
+          <td>Answer typed student questions, paste formula snippets.</td>
+          <td>Encourages shy students to communicate comfortably during problem solving.</td>
+        </tr>
+        <tr>
+          <td><strong>End Session Bridge</strong></td>
+          <td>Click <strong>"Finish &amp; Launch Checkpoint"</strong>.</td>
+          <td>Marks lesson complete, prompts student to take a 5-question retention quiz, and credits your payout balance!</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 5: AI CHEATING DETECTION & INTEGRITY -->
+  <div class="tutorial-card">
+    <div class="card-header">
+      <div class="step-badge num-purple">5</div>
+      <div class="card-title-text">Monitoring Academic Integrity &amp; Cheating Telemetry</div>
+      <span class="route-badge">/admin/cheating-detection</span>
+    </div>
+
+    <p style="font-size: 11px; color: #475569; margin-bottom: 7px;">
+      EduPath tracks session heuristics without invasive screen recording or intrusive biometric surveillance:
+    </p>
+
+    <div class="grid-3">
+      <div class="sub-box">
+        <div class="sub-box-title">🚨 Window Blur / Tab Switch</div>
+        <div class="sub-box-text">Detects when a student navigates away from the exam tab to search for external answers.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">⚡ Answer Speed Anomaly</div>
+        <div class="sub-box-text">Flags multi-paragraph comprehension questions answered in under 3.5 seconds.</div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">📈 Uncharacteristic Score Jump</div>
+        <div class="sub-box-text">Flags a sudden jump from a 45% baseline to 100% on hard-difficulty questions.</div>
+      </div>
+    </div>
+
+    <div class="pro-tip">
+      <span>⚖️</span>
+      <span><strong>Triage Protocol:</strong> Review the Confidence Score (0–100%) and timeline logs. Choose <strong>"Mark as Reviewed"</strong> (mild flag), <strong>"Clear Flag"</strong> (false alarm), or <strong>"Require Retest"</strong> (blatant cheating).</span>
+    </div>
+  </div>
+
+  <!-- SECTION 6: GRADEBOOK ALERTS & BILLING LEDGER -->
+  <div class="tutorial-card">
+    <div class="card-header">
+      <div class="step-badge num-green">6</div>
+      <div class="card-title-text">Student Gradebook Notifications &amp; Earnings Payouts</div>
+      <span class="route-badge">Dashboard &gt; Billing Ledger</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="sub-box">
+        <div class="sub-box-title">🔔 Automated Gradebook Alerts</div>
+        <div class="sub-box-text">
+          Whenever an enrolled student finishes a checkpoint or unit test, you receive an automated notification:  
+          <em>"Alex Johnson submitted Linear Equations (92% - Proficient ✅)"</em>. Click the alert to inspect question-by-question telemetry.
+        </div>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">💰 Monthly Payout Schedule</div>
+        <div class="sub-box-text">
+          Tutoring earnings are distributed on the 1st of every month via direct deposit. Track accumulated lesson fees ($35.00/session) and active subscription quotas under the Overview ledger table.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK CHECKLIST FOR SUCCESS -->
+  <div class="tutorial-card" style="background: #f8fafc;">
+    <div class="card-title-text" style="margin-bottom: 6px; font-size: 12px;">
+      🌟 Educator Checklist for Maximum Student Engagement
+    </div>
+    <div class="grid-3" style="font-size: 10px; color: #475569;">
+      <div>• <strong>Profile Bio:</strong> Keep your teacher profile up to date with grade levels taught.</div>
+      <div>• <strong>Agenda First:</strong> Always outline 3–4 session goals at the start of a lesson.</div>
+      <div>• <strong>Interactive Whiteboard:</strong> Encourage students to draw their work on canvas.</div>
+      <div>• <strong>Rich Explanations:</strong> Add step-by-step reasoning to all bank questions.</div>
+      <div>• <strong>Checkpoint Assessment:</strong> Trigger post-lesson quizzes to measure retention.</div>
+      <div>• <strong>Integrity Review:</strong> Check your Cheating Detection alerts weekly.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>EduPath Platform • Official Educator Operational Tutorial</div>
+    <div>Version 3.0 • Confidential Instructional Documentation</div>
+  </div>
+
+</body>
+</html>

@@ -91,7 +91,26 @@ export default function AIParentReportSummarizer() {
     },
   ];
 
-  const [reportsList, setReportsList] = useState<Report[]>(initialReports);
+  const [reportsList, setReportsList] = useState<Report[]>(() => {
+    try {
+      const stored = localStorage.getItem('edupath_parent_reports');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const merged = [...parsed];
+          initialReports.forEach(ir => {
+            if (!merged.some(m => m.id === ir.id)) {
+              merged.push(ir);
+            }
+          });
+          return merged;
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading stored parent reports:', e);
+    }
+    return initialReports;
+  });
   const currentReport = selectedReport || reportsList[0];
 
   const handleGenerateNewReport = async () => {
@@ -138,7 +157,11 @@ export default function AIParentReportSummarizer() {
       console.warn("Puter AI parent report synthesis fallback:", e);
     }
 
-    setReportsList(prev => [newReport, ...prev]);
+    setReportsList(prev => {
+      const updated = [newReport, ...prev];
+      localStorage.setItem('edupath_parent_reports', JSON.stringify(updated));
+      return updated;
+    });
     setSelectedReport(newReport);
     setIsGenerating(false);
     toast.success('Generated fresh AI Progress Summary Report! ✨');

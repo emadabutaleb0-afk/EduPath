@@ -4,8 +4,9 @@ import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import { mockTestResults, mockTests } from '@/lib/mockData';
-import { Download, Share2, TrendingUp, Target, CheckCircle2, Award, Zap, FileText } from 'lucide-react';
+import { Download, Share2, TrendingUp, Target, CheckCircle2, Award, Zap, FileText, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState, useEffect, useRef } from 'react';
 
@@ -409,6 +410,60 @@ export default function Results() {
                   <p className="text-2xl font-bold text-indigo-500">
                     {Math.round((result.timeTaken / test.duration) * 100)}%
                   </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Automated Stakeholder Reporting Sync */}
+        <div className="max-w-2xl mx-auto animate-fadeInUp" style={{ animationDelay: '350ms' }}>
+          <Card className="border border-border/80 bg-card rounded-2xl overflow-hidden shadow-sm">
+            <CardHeader className="bg-muted/20 p-4 border-b border-border/60">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  Automated Stakeholder Reporting &amp; AI Summaries
+                </CardTitle>
+                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30 text-[10px] font-bold">
+                  Synced Live
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-3 text-xs text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl border border-border/60 bg-background/50 space-y-1">
+                  <span className="font-bold text-foreground flex items-center gap-1.5">
+                    👨‍👩‍👧 Parent Digest
+                  </span>
+                  <p className="text-[11px] text-muted-foreground leading-normal">
+                    AI summary card automatically generated for parent review, outlining key mastery highlights and next steps.
+                  </p>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={() => navigate('/ai/parent-reports')}
+                    className="p-0 h-auto text-primary font-bold text-[11px] hover:underline"
+                  >
+                    View Parent Report Digest →
+                  </Button>
+                </div>
+
+                <div className="p-3 rounded-xl border border-border/60 bg-background/50 space-y-1">
+                  <span className="font-bold text-foreground flex items-center gap-1.5">
+                    👨‍🏫 Teacher Gradebook
+                  </span>
+                  <p className="text-[11px] text-muted-foreground leading-normal">
+                    Results logged in educator gradebook. Teacher alert dispatched for {result.subject} mastery calibration.
+                  </p>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={() => navigate('/teachers')}
+                    className="p-0 h-auto text-primary font-bold text-[11px] hover:underline"
+                  >
+                    Schedule 1-on-1 Review Lesson →
+                  </Button>
                 </div>
               </div>
             </CardContent>

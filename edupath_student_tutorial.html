@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPath — Official Student Tutorial &amp; Learning Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 15mm 14mm 15mm 14mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.55;
+      font-size: 12px;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    code, pre {
+      font-family: 'Fira Code', monospace;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      padding-top: 6px;
+    }
+
+    /* Cover / Hero Header */
+    .hero-header {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 50%, #fef3c7 100%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 24px 22px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #2563eb;
+      color: #ffffff;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-size: 13px;
+      color: #475569;
+      max-width: 620px;
+      line-height: 1.5;
+    }
+
+    .meta-pills {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(191, 219, 254, 0.6);
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .meta-pills strong {
+      color: #0f172a;
+    }
+
+    /* Step Card Container */
+    .tutorial-step {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 8px;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .step-num-1 { background: #dbeafe; color: #1e40af; }
+    .step-num-2 { background: #dcfce7; color: #15803d; }
+    .step-num-3 { background: #fef3c7; color: #b45309; }
+    .step-num-4 { background: #e0e7ff; color: #4338ca; }
+    .step-num-5 { background: #fae8ff; color: #86198f; }
+    .step-num-6 { background: #e0f2fe; color: #0369a1; }
+
+    .step-title-text {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .step-route-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #f1f5f9;
+      color: #334155;
+      margin-left: auto;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Sub-grid Elements */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .sub-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 9px 11px;
+    }
+
+    .sub-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 3px;
+    }
+
+    .sub-card-text {
+      font-size: 10.5px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    /* Action Checklist */
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0;
+      display: grid;
+      gap: 5px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .check-icon {
+      color: #10b981;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    /* Tips & Pro Callouts */
+    .pro-tip {
+      background: #eff6ff;
+      border-left: 3.5px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-size: 11px;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .warning-tip {
+      background: #fffbeb;
+      border-left: 3.5px solid #f59e0b;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-size: 11px;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* Tables */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .styled-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 9px;
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .styled-table td {
+      padding: 6px 9px;
+      border-bottom: 1px solid #f1f5f9;
+      line-height: 1.4;
+      vertical-align: top;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO COVER BANNER -->
+  <div class="hero-header">
+    <div class="hero-badge">🎓 Student Quick-Start Mastery Guide</div>
+    <h1 class="hero-title">Welcome to EduPath: Your Learning Adventure</h1>
+    <p class="hero-subtitle">
+      A step-by-step handbook designed to help you ace your courses, book personalized 1-on-1 tutoring sessions, 
+      master live virtual classrooms, and boost your quiz scores with AI-powered insights.
+    </p>
+
+    <div class="meta-pills">
+      <div>Grade Range: <strong>Grades 4 – 12</strong></div>
+      <div>Platform: <strong>EduPath AI Web Platform</strong></div>
+      <div>Session Time: <strong>45 mins / lesson</strong></div>
+      <div>Support: <strong>24/7 AI Study Assistant</strong></div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="tutorial-step">
+    <div class="step-header">
+      <div class="step-number step-num-1">1</div>
+      <div class="step-title-text">Getting Started: Sign Up &amp; Diagnostic Placement</div>
+      <span class="step-route-badge">/register &amp; /test-enhanced/test-005</span>
+    </div>
+
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 8px;">
+      Setting up your profile takes less than two minutes and personalizes all lessons to your exact grade level.
+    </p>
+
+    <div class="grid-2">
+      <div class="sub-card">
+        <div class="sub-card-title">📝 1. Create Your Student Profile</div>
+        <div class="sub-card-text">
+          Enter your name, school email, and select your current <strong>Grade Level</strong> (e.g., Grade 8). This tunes all curriculum units and quiz recommendations.
+        </div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">⚡ 2. Take the 5-Minute Placement Test</div>
+        <div class="sub-card-text">
+          Launch the quick adaptive diagnostic (<span style="font-family: monospace;">test-005</span>). It measures where you shine and where you can use a quick refresher.
+        </div>
+      </div>
+    </div>
+
+    <div class="pro-tip">
+      <span>💡</span>
+      <span><strong>Pro Tip:</strong> Don't worry about getting every diagnostic question right! The test adapts so the platform can recommend the best starting study modules for you.</span>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="tutorial-step">
+    <div class="step-header">
+      <div class="step-number step-num-2">2</div>
+      <div class="step-title-text">Navigating Your Student Dashboard</div>
+      <span class="step-route-badge">/student-dashboard</span>
+    </div>
+
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 8px;">
+      Your Student Dashboard is your central hub for tracking progress, viewing upcoming sessions, and studying.
+    </p>
+
+    <div class="grid-3">
+      <div class="sub-card">
+        <div class="sub-card-title">🔥 Daily Study Streak</div>
+        <div class="sub-card-text">Complete at least one practice quiz or lesson per day to keep your study streak alive and earn milestone badges!</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">📊 Subject Mastery Meters</div>
+        <div class="sub-card-text">Track your live mastery levels across Mathematics, Science, English, Geography, and History in real time.</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">🤖 AI Study Assistant</div>
+        <div class="sub-card-text">Stuck on a tricky homework question? Tap the floating Study Assistant icon in the bottom corner for step-by-step guidance.</div>
+      </div>
+    </div>
+
+    <ul class="checklist">
+      <li class="checklist-item">
+        <span class="check-icon">✓</span>
+        <span><strong>Curriculum Syllabus:</strong> Expand unit accordions to read lesson summaries and download PDF cheat-sheets.</span>
+      </li>
+      <li class="checklist-item">
+        <span class="check-icon">✓</span>
+        <span><strong>Retraining Drills:</strong> If a test shows an area to improve, a targeted 5-question refresher drill will unlock on your dashboard.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="tutorial-step">
+    <div class="step-header">
+      <div class="step-number step-num-3">3</div>
+      <div class="step-title-text">Finding &amp; Booking Your 1-on-1 Tutor</div>
+      <span class="step-route-badge">/teachers</span>
+    </div>
+
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 8px;">
+      Connect with expert teachers for focused 45-minute live tutoring sessions whenever you need extra help.
+    </p>
+
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>What to Do</th>
+          <th>Details &amp; Options</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Filter</strong></td>
+          <td>Browse by Subject</td>
+          <td>Filter by Math, Science, English, etc. Look for educator ratings (e.g. 4.9 ★) and subject badges.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Schedule</strong></td>
+          <td>Pick Date &amp; Time</td>
+          <td>Click <strong>"Book Lesson"</strong>. Choose your focus topic, select a date (Today, Tomorrow, or upcoming), and pick an open time slot.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Checkout</strong></td>
+          <td>Choose Payment Option</td>
+          <td>
+            • <strong>Single Lesson:</strong> $35.00 one-time session.<br/>
+            • <strong>Monthly Study Pass:</strong> $119.00 (4 lessons, save 15%).<br/>
+            • <strong>Use Study Pass Credit:</strong> $0.00 (deducts 1 credit from your active package).
+          </td>
+        </tr>
+        <tr>
+          <td><strong>4. Sync</strong></td>
+          <td>Add to Calendar</td>
+          <td>Click <strong>"Add to Calendar (.ics)"</strong> on the confirmation screen to set a reminder on your phone or laptop!</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- STEP 4 -->
+  <div class="tutorial-step">
+    <div class="step-header">
+      <div class="step-number step-num-4">4</div>
+      <div class="step-title-text">Mastering the Live Virtual Classroom</div>
+      <span class="step-route-badge">/classroom/:lessonId</span>
+    </div>
+
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 8px;">
+      15 minutes before your scheduled class, a pulsing <strong>"Enter Classroom"</strong> button appears on your dashboard.
+    </p>
+
+    <div class="grid-2">
+      <div class="sub-card">
+        <div class="sub-card-title">🎥 Interactive Video Stage</div>
+        <div class="sub-card-text">
+          High-definition video call with your teacher. Use the bottom toolbar to toggle your mic, camera, or screen share. Tap <strong>Raise Hand</strong> if you have a question!
+        </div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">🎨 Digital Whiteboard &amp; Slides</div>
+        <div class="sub-card-text">
+          Switch tabs to sketch formulas, draw geometry shapes with colored pens, or follow the teacher’s presentation slide deck in real time.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="sub-card">
+        <div class="sub-card-title">📋 Live Agenda Checklist</div>
+        <div class="sub-card-text">
+          Track session progress as your teacher checks off lesson goals (Warm-up ➔ Core theorem ➔ Practice problems ➔ Q&amp;A).
+        </div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">💾 Private Student Notes Pad</div>
+        <div class="sub-card-text">
+          Type your personal study notes right inside the room. They auto-save locally, and you can click <strong>"Export .txt"</strong> anytime!
+        </div>
+      </div>
+    </div>
+
+    <div class="pro-tip">
+      <span>🚀</span>
+      <span><strong>Lesson Wrap-Up:</strong> When class wraps up, tap <strong>"Finish &amp; Launch Checkpoint"</strong>. This launches a short 5-question quiz to lock in what you just learned!</span>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="tutorial-step">
+    <div class="step-header">
+      <div class="step-number step-num-5">5</div>
+      <div class="step-title-text">Taking Quizzes &amp; Adaptive Assessments</div>
+      <span class="step-route-badge">/tests &amp; /test-enhanced/:id</span>
+    </div>
+
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 8px;">
+      EduPath tests are designed to be dynamic, fair, and focused on helping you learn rather than stressing you out.
+    </p>
+
+    <div class="grid-3">
+      <div class="sub-card">
+        <div class="sub-card-title">📈 Dynamic Difficulty</div>
+        <div class="sub-card-text">Questions adjust as you go! If you get a question right, the engine presents an intermediate challenge to test deeper mastery.</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">⏱️ Comfortable Timers</div>
+        <div class="sub-card-text">Each test clearly shows the remaining time. Pace yourself; there is plenty of time to read every question carefully.</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">🔍 Question Review</div>
+        <div class="sub-card-text">Before submitting your test, you can review flagged questions, see unanswered items, and change your answers.</div>
+      </div>
+    </div>
+
+    <div class="warning-tip">
+      <span>🛡️</span>
+      <span><strong>Test Integrity Tip:</strong> Stay focused on the test tab while taking an assessment! Switching tabs or minimizing your window will trigger focus warnings.</span>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="tutorial-step">
+    <div class="step-header">
+      <div class="step-number step-num-6">6</div>
+      <div class="step-title-text">Understanding Results &amp; AI Explanations</div>
+      <span class="step-route-badge">/results/:id &amp; /test-review/:id</span>
+    </div>
+
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 8px;">
+      The moment you complete a test, EduPath gives you instant feedback and celebratory confetti for high scores!
+    </p>
+
+    <div class="grid-2">
+      <div class="sub-card">
+        <div class="sub-card-title">💡 Step-by-Step AI Explanations</div>
+        <div class="sub-card-text">
+          Don't just see what was right or wrong—read detailed explanations explaining <em>why</em> an answer is correct so you never repeat a mistake.
+        </div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">👨‍👩‍👧 Automatic Parent Sync</div>
+        <div class="sub-card-text">
+          Your test results automatically create a positive summary in your parent's digest, highlighting your hard work and top skills!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK REFERENCE CHEAT SHEET -->
+  <div class="tutorial-step" style="background: #f8fafc;">
+    <div class="step-title-text" style="margin-bottom: 8px; font-size: 13px;">
+      ⚡ Quick Reference Keyboard Shortcuts &amp; Best Practices
+    </div>
+    <div class="grid-3" style="font-size: 10.5px; color: #475569;">
+      <div>• <strong>Daily Goal:</strong> Spend 15 minutes a day practicing 1 unit.</div>
+      <div>• <strong>Need Help?</strong> Use the floating AI Assistant on any page.</div>
+      <div>• <strong>Questions?</strong> Message your teacher in the live room chat.</div>
+      <div>• <strong>Study Pass:</strong> Monthly pass saves 15% across all instructors.</div>
+      <div>• <strong>Notes Export:</strong> Save your classroom whiteboard notes before leaving.</div>
+      <div>• <strong>Badges:</strong> Check your profile page to see achievements unlocked!</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>EduPath Platform • Official Student Learning Handbook</div>
+    <div>Version 3.0 • Happy Learning! 🌟</div>
+  </div>
+
+</body>
+</html>

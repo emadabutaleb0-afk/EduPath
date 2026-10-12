@@ -7,6 +7,10 @@ import {
   mockContentVersions, 
   mockUserActivities,
   mockEnrollments,
+  mockBookings,
+  mockTransactions,
+  mockStudentPasses,
+  mockNotifications,
   availableSubjects,
   availableGrades,
   Test,
@@ -17,7 +21,11 @@ import {
   CheatDetectionFlag,
   ContentVersion,
   UserActivity,
-  Enrollment
+  Enrollment,
+  LessonBooking,
+  Transaction,
+  StudentPass,
+  Notification
 } from './mockData';
 
 // DB Mode cache
@@ -148,6 +156,36 @@ export async function hydrateDatabaseState(): Promise<void> {
       mockEnrollments.push(...enrollData);
     }
 
+    // 11. Hydrate Bookings, Transactions, and Student Passes from localStorage
+    try {
+      const storedBookings = localStorage.getItem('edupath_bookings');
+      if (storedBookings) {
+        const parsed = JSON.parse(storedBookings);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          mockBookings.length = 0;
+          mockBookings.push(...parsed);
+        }
+      }
+      const storedTxs = localStorage.getItem('edupath_transactions');
+      if (storedTxs) {
+        const parsedTxs = JSON.parse(storedTxs);
+        if (Array.isArray(parsedTxs) && parsedTxs.length > 0) {
+          mockTransactions.length = 0;
+          mockTransactions.push(...parsedTxs);
+        }
+      }
+      const storedPasses = localStorage.getItem('edupath_student_passes');
+      if (storedPasses) {
+        const parsedPasses = JSON.parse(storedPasses);
+        if (Array.isArray(parsedPasses) && parsedPasses.length > 0) {
+          mockStudentPasses.length = 0;
+          mockStudentPasses.push(...parsedPasses);
+        }
+      }
+    } catch (storeErr) {
+      console.warn('Could not restore bookings/transactions from localStorage:', storeErr);
+    }
+
     console.log('✅ Database Hydration complete! Loaded memory arrays synchronized perfectly.');
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('edupath:database-hydrated', {
@@ -228,27 +266,86 @@ export async function saveQuestionToDB(question: Question): Promise<boolean> {
 
 export async function saveResultToDB(result: TestResult): Promise<boolean> {
   try {
-    const res = await fetch('/api/test-results', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(result)
+    mockTestResults.unshift(result);
+    
+    const student = mockAllUsers.find(u => u.id === result.studentId);
+    const studentName = student?.name || 'Alex Johnson';
+
+    // Auto log active completed result
+    await saveActivityToDB({
+      id: `act-${Date.now()}`,
+      userId: result.studentId,
+      action: 'test_completed',
+      details: `Completed exam "${result.testTitle}" with score ${result.score}/${result.totalScore} (${result.percentage}%)`,
+      timestamp: new Date()
     });
-    if (res.ok) {
-      mockTestResults.unshift(result);
-      // Auto log active completed result
-      await saveActivityToDB({
-        id: `act-${Date.now()}`,
-        userId: result.studentId,
-        action: 'test_completed',
-        details: `Completed exam "${result.testTitle}" with score ${result.score}/${result.totalScore} (${result.percentage}%)`,
-        timestamp: new Date()
-      });
-      return true;
+
+    // 1. Hook Parent Notification & Report Generation
+    dispatchSystemNotification({
+      userId: student?.linkedParents?.[0] || 'parent-001',
+      type: 'result_ready',
+      title: `Test Completed by ${studentName} 📊`,
+      message: `${studentName} scored ${result.score}/${result.totalScore} (${result.percentage}%) on "${result.testTitle}". AI Summary report is ready to review.`,
+      icon: '📈',
+      read: false,
+      actionUrl: '/ai/parent-reports'
+    });
+
+    // Auto-append into parent reports ledger
+    try {
+      const storedReports = localStorage.getItem('edupath_parent_reports');
+      const reportsList = storedReports ? JSON.parse(storedReports) : [];
+      const newReport = {
+        id: `report-${Date.now()}`,
+        period: `Assessment: ${result.testTitle}`,
+        studentName: studentName,
+        summary: `${studentName} completed the ${result.subject} assessment "${result.testTitle}", achieving a score of ${result.percentage}%. The student showed solid mastery of foundational topics with opportunities for higher-level application.`,
+        highlights: [
+          `Achieved ${result.percentage}% on "${result.testTitle}"`,
+          `Answered ${result.score} out of ${result.totalScore} questions correctly`,
+          `Demonstrated proficiency in: ${(result.strengths && result.strengths.length > 0 ? result.strengths : ['Fundamental Concepts']).join(', ')}`
+        ],
+        areasOfConcern: [
+          (result.weaknesses && result.weaknesses.length > 0 ? result.weaknesses[0] : 'Time management during multi-step problems')
+        ],
+        suggestions: [
+          'Review question-by-question breakdown in student results page',
+          'Consider a 1-on-1 tutoring checkpoint session to solidify complex areas',
+          'Continue daily practice streak to maintain momentum'
+        ],
+        generatedAt: new Date().toISOString()
+      };
+      reportsList.unshift(newReport);
+      localStorage.setItem('edupath_parent_reports', JSON.stringify(reportsList));
+    } catch (err) {
+      console.warn('Could not auto-append to parent reports localStorage:', err);
     }
+
+    // 2. Hook Teacher Gradebook Notification
+    dispatchSystemNotification({
+      userId: 'teacher-001',
+      type: 'result_ready',
+      title: `Gradebook Update: ${result.subject} 📝`,
+      message: `${studentName} submitted "${result.testTitle}" with a score of ${result.percentage}%. Mastery status: ${result.percentage >= 70 ? 'Proficient ✅' : 'Needs Review ⚠️'}.`,
+      icon: '🎓',
+      read: false,
+      actionUrl: '/teacher-dashboard'
+    });
+
+    // Attempt backend sync
+    try {
+      await fetch('/api/test-results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(result)
+      });
+    } catch (_) {}
+
+    return true;
   } catch (e) {
     console.error('saveResultToDB failed', e);
+    return false;
   }
-  return false;
 }
 
 export async function saveUserToDB(user: UserAccount): Promise<boolean> {
@@ -511,3 +608,122 @@ export async function unenrollStudent(studentId: string, teacherId: string, subj
   }
   return false;
 }
+
+// -------------------------------------------------------------
+// 3. BOOKINGS, PAYMENTS & LIVE LESSON LIFECYCLE HELPERS
+// -------------------------------------------------------------
+
+export function saveBookingToDB(booking: LessonBooking): boolean {
+  try {
+    const existingIdx = mockBookings.findIndex(b => b.id === booking.id);
+    if (existingIdx !== -1) {
+      mockBookings[existingIdx] = booking;
+    } else {
+      mockBookings.unshift(booking);
+    }
+    localStorage.setItem('edupath_bookings', JSON.stringify(mockBookings));
+    
+    // Auto-create notification for student
+    dispatchSystemNotification({
+      userId: booking.studentId,
+      type: 'test_available',
+      title: 'Lesson Scheduled 📅',
+      message: `Your lesson "${booking.lessonTitle}" with ${booking.teacherName} is set for ${booking.scheduledDate} at ${booking.scheduledTime}.`,
+      icon: '🎓',
+      read: false,
+      actionUrl: `/classroom/${booking.id}`
+    });
+
+    return true;
+  } catch (e) {
+    console.error('saveBookingToDB failed', e);
+    return false;
+  }
+}
+
+export function cancelBookingInDB(bookingId: string): boolean {
+  try {
+    const idx = mockBookings.findIndex(b => b.id === bookingId);
+    if (idx !== -1) {
+      mockBookings[idx].status = 'cancelled';
+      localStorage.setItem('edupath_bookings', JSON.stringify(mockBookings));
+      return true;
+    }
+  } catch (e) {
+    console.error('cancelBookingInDB failed', e);
+  }
+  return false;
+}
+
+export function completeBookingInDB(bookingId: string, notes?: string): boolean {
+  try {
+    const idx = mockBookings.findIndex(b => b.id === bookingId);
+    if (idx !== -1) {
+      mockBookings[idx].status = 'completed';
+      if (notes) {
+        mockBookings[idx].notes = notes;
+      }
+      localStorage.setItem('edupath_bookings', JSON.stringify(mockBookings));
+      return true;
+    }
+  } catch (e) {
+    console.error('completeBookingInDB failed', e);
+  }
+  return false;
+}
+
+export function saveTransactionToDB(tx: Transaction): boolean {
+  try {
+    mockTransactions.unshift(tx);
+    localStorage.setItem('edupath_transactions', JSON.stringify(mockTransactions));
+    return true;
+  } catch (e) {
+    console.error('saveTransactionToDB failed', e);
+    return false;
+  }
+}
+
+export function deductStudentPassCredit(studentId: string): boolean {
+  try {
+    const pass = mockStudentPasses.find(p => p.studentId === studentId && p.status === 'active' && p.remainingCredits > 0);
+    if (pass) {
+      pass.remainingCredits -= 1;
+      localStorage.setItem('edupath_student_passes', JSON.stringify(mockStudentPasses));
+      return true;
+    }
+  } catch (e) {
+    console.error('deductStudentPassCredit failed', e);
+  }
+  return false;
+}
+
+export function purchaseStudentPass(studentId: string, planName: string, credits: number): StudentPass | null {
+  try {
+    const newPass: StudentPass = {
+      id: `pass-${Date.now()}`,
+      studentId,
+      planName,
+      remainingCredits: credits,
+      totalCredits: credits,
+      validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'active',
+    };
+    mockStudentPasses.unshift(newPass);
+    localStorage.setItem('edupath_student_passes', JSON.stringify(mockStudentPasses));
+    return newPass;
+  } catch (e) {
+    console.error('purchaseStudentPass failed', e);
+    return null;
+  }
+}
+
+export function dispatchSystemNotification(notif: Omit<Notification, 'id' | 'createdAt'>): Notification {
+  const newNotif: Notification = {
+    ...notif,
+    id: `notif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    createdAt: new Date().toISOString()
+  };
+  mockNotifications.unshift(newNotif);
+  return newNotif;
+}
+

@@ -14,6 +14,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import TeachersList from "./pages/TeachersList";
 import TeacherInvitePoster from "./pages/TeacherInvitePoster";
 import TeacherPitchDeck from "./pages/TeacherPitchDeck";
+import SystemPresentationDeck from "./pages/SystemPresentationDeck";
+import LiveClassroom from "./pages/LiveClassroom";
 import StudentDashboard from "./pages/StudentDashboard";
 import Tests from "./pages/Tests";
 import TestTaking from "./pages/TestTaking";
@@ -89,9 +91,13 @@ function Router() {
       <Route path="/poster" component={TeacherInvitePoster} />
       <Route path="/pitch-deck" component={TeacherPitchDeck} />
       <Route path="/deck" component={TeacherPitchDeck} />
+      <Route path="/presentation" component={SystemPresentationDeck} />
+      <Route path="/slides" component={SystemPresentationDeck} />
 
       {/* Protected Student Routes */}
       <ProtectedRoute path="/student-dashboard" component={StudentDashboard} allowedRoles={['student']} />
+      <ProtectedRoute path="/classroom/:lessonId" component={LiveClassroom} allowedRoles={['student', 'teacher', 'admin']} />
+      <ProtectedRoute path="/classroom" component={LiveClassroom} allowedRoles={['student', 'teacher', 'admin']} />
       <ProtectedRoute path="/tests" component={Tests} allowedRoles={['student']} />
       <ProtectedRoute path="/test/:id" component={TestTakingEnhanced} allowedRoles={['student']} />
       <ProtectedRoute path="/test-enhanced/:id" component={TestTakingEnhanced} allowedRoles={['student']} />

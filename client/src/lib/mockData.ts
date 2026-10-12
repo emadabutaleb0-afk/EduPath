@@ -106,6 +106,165 @@ export interface Enrollment {
 
 export const mockEnrollments: Enrollment[] = [];
 
+export interface LessonBooking {
+  id: string;
+  studentId: string;
+  studentName: string;
+  teacherId: string;
+  teacherName: string;
+  teacherAvatar?: string;
+  subject: string;
+  lessonTitle: string;
+  scheduledDate: string; // YYYY-MM-DD
+  scheduledTime: string; // "10:00 AM", "04:30 PM"
+  durationMinutes: number; // 45
+  status: 'scheduled' | 'live' | 'completed' | 'cancelled';
+  amountPaid: number;
+  paymentMethod: string;
+  transactionId: string;
+  meetingUrl?: string;
+  curriculumLessonId?: string;
+  checkpointTestId?: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface Transaction {
+  id: string;
+  userId: string;
+  userName: string;
+  bookingId?: string;
+  type: 'lesson_single' | 'monthly_pass';
+  amount: number;
+  currency: string;
+  status: 'succeeded' | 'pending' | 'refunded';
+  paymentMethod: string;
+  cardLast4?: string;
+  description: string;
+  createdAt: string;
+}
+
+export interface StudentPass {
+  id: string;
+  studentId: string;
+  planName: string;
+  remainingCredits: number;
+  totalCredits: number;
+  validUntil: string;
+  status: 'active' | 'expired';
+}
+
+// Initial seed bookings
+export const mockBookings: LessonBooking[] = [
+  {
+    id: 'booking-001',
+    studentId: 'student-001',
+    studentName: 'Alex Johnson',
+    teacherId: 'teacher-001',
+    teacherName: 'Teacher Demo',
+    teacherAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TeacherDemo',
+    subject: 'Mathematics',
+    lessonTitle: 'Linear Equations & Coordinate Systems',
+    scheduledDate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().split('T')[0], // Today in 2h
+    scheduledTime: '04:30 PM',
+    durationMinutes: 45,
+    status: 'scheduled',
+    amountPaid: 35.00,
+    paymentMethod: 'Visa •••• 4242',
+    transactionId: 'tx-001',
+    curriculumLessonId: 'lesson-003',
+    checkpointTestId: 'test-001',
+    notes: 'Focus on slope-intercept form and graphing lines.',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'booking-002',
+    studentId: 'student-001',
+    studentName: 'Alex Johnson',
+    teacherId: 'teacher-001',
+    teacherName: 'Teacher Demo',
+    teacherAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TeacherDemo',
+    subject: 'Science',
+    lessonTitle: 'Chemical Reactions & Atomic Bonds',
+    scheduledDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    scheduledTime: '03:00 PM',
+    durationMinutes: 45,
+    status: 'scheduled',
+    amountPaid: 35.00,
+    paymentMethod: 'Study Pass Credit',
+    transactionId: 'tx-002',
+    curriculumLessonId: 'lesson-004',
+    checkpointTestId: 'test-002',
+    notes: 'Prepare atomic structure overview notes before session.',
+    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'booking-003',
+    studentId: 'student-001',
+    studentName: 'Alex Johnson',
+    teacherId: 'teacher-001',
+    teacherName: 'Teacher Demo',
+    teacherAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TeacherDemo',
+    subject: 'Mathematics',
+    lessonTitle: 'Algebra Basics & Variables',
+    scheduledDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    scheduledTime: '04:30 PM',
+    durationMinutes: 45,
+    status: 'completed',
+    amountPaid: 35.00,
+    paymentMethod: 'Visa •••• 4242',
+    transactionId: 'tx-000',
+    curriculumLessonId: 'lesson-001',
+    checkpointTestId: 'test-001',
+    notes: 'Great job completing expressions exercise with 88% accuracy.',
+    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+  }
+];
+
+// Initial seed transactions
+export const mockTransactions: Transaction[] = [
+  {
+    id: 'tx-001',
+    userId: 'student-001',
+    userName: 'Alex Johnson',
+    bookingId: 'booking-001',
+    type: 'lesson_single',
+    amount: 35.00,
+    currency: 'USD',
+    status: 'succeeded',
+    paymentMethod: 'Card',
+    cardLast4: '4242',
+    description: '1-on-1 Tutoring Session: Mathematics with Teacher Demo',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'tx-pass-001',
+    userId: 'student-001',
+    userName: 'Alex Johnson',
+    type: 'monthly_pass',
+    amount: 119.00,
+    currency: 'USD',
+    status: 'succeeded',
+    paymentMethod: 'Card',
+    cardLast4: '4242',
+    description: 'EduPath Monthly Study Pass (4 Lessons)',
+    createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+  }
+];
+
+// Initial student pass
+export const mockStudentPasses: StudentPass[] = [
+  {
+    id: 'pass-001',
+    studentId: 'student-001',
+    planName: 'Monthly Study Pass (4 Lessons)',
+    remainingCredits: 3,
+    totalCredits: 4,
+    validUntil: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    status: 'active',
+  }
+];
+
 // Centralized Subject & Grade registries for administrative customization
 export const availableSubjects = ['Mathematics', 'Science', 'Geography', 'History', 'English'];
 export const availableGrades = [4, 5, 6, 7, 8, 9, 10, 11, 12];
