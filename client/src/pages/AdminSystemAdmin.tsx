@@ -5,13 +5,45 @@ import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mockSystemLogs } from '@/lib/mockData';
-import { Database, HardDrive, Activity, Download, RefreshCw, AlertCircle } from 'lucide-react';
+import { Database, HardDrive, Activity, Download, RefreshCw, AlertCircle, FileCode, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AdminSystemAdmin() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<'logs' | 'backups' | 'performance'>('logs');
   const [systemLogs, setSystemLogs] = useState(mockSystemLogs);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = (format: 'sql' | 'json') => {
+    setIsExporting(true);
+    const link = document.createElement('a');
+    link.href = format === 'sql' ? '/api/db/export-sql' : '/api/db/export-json';
+    link.download = `edupath_production_export.${format}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success(`Exporting ${format.toUpperCase()} production database dump!`);
+    setIsExporting(false);
+  };
+
+  const handleProvisionTables = async () => {
+    setIsExporting(true);
+    toast.info('Provisioning all 29 production tables...');
+    try {
+      const res = await fetch('/api/db/create-tables', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`Created & verified ${data.tableCount} tables with ${data.totalRows} records!`);
+      } else {
+        toast.error(data.error || 'Failed to provision tables');
+      }
+    } catch {
+      toast.error('Failed to communicate with provisioning engine.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   if (!user || user.role !== 'admin') {
     navigate('/login');
@@ -178,57 +210,80 @@ export default function AdminSystemAdmin() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Database Backups</CardTitle>
-                  <CardDescription>Manage and restore database backups</CardDescription>
+                  <CardTitle>Database Management & Backups</CardTitle>
+                  <CardDescription>Export production SQL/JSON dumps, provision real relational tables, and manage backups</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex gap-3">
-                    <Button className="gap-2">
+                  <div className="flex flex-wrap gap-3">
+                    <Button 
+                      onClick={handleProvisionTables} 
+                      disabled={isExporting} 
+                      className="gap-2 bg-gradient-to-r from-primary to-accent"
+                    >
                       <Database className="w-4 h-4" />
-                      Create Backup Now
+                      Provision All 29 Production Tables
                     </Button>
-                    <Button variant="outline" className="gap-2">
-                      <RefreshCw className="w-4 h-4" />
-                      Restore Backup
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleExport('sql')} 
+                      disabled={isExporting} 
+                      className="gap-2"
+                    >
+                      <FileCode className="w-4 h-4 text-primary" />
+                      Export SQL Dump (.sql)
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleExport('json')} 
+                      disabled={isExporting} 
+                      className="gap-2"
+                    >
+                      <FileText className="w-4 h-4 text-emerald-500" />
+                      Export JSON Backup (.json)
                     </Button>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="p-4 border border-border rounded-lg">
+                  <div className="space-y-3 pt-2">
+                    <div className="p-4 border border-border rounded-lg bg-card/50">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <p className="font-medium">Backup - May 10, 2026</p>
-                          <p className="text-sm text-muted-foreground">Size: 2.3 GB</p>
+                          <p className="font-medium flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            Production Relational Database (edupath_export.sql)
+                          </p>
+                          <p className="text-sm text-muted-foreground">29 Tables • 2,100 Rows • PostgreSQL 14+ / SQLite Ready</p>
                         </div>
-                        <span className="text-xs bg-success/15 text-success border border-success/20 px-2 py-1 rounded font-semibold">
-                          Complete
+                        <span className="text-xs bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded font-semibold">
+                          Verified & Ready
                         </span>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="gap-1">
+                        <Button size="sm" variant="outline" className="gap-1" onClick={() => handleExport('sql')}>
                           <Download className="w-3 h-3" />
-                          Download
+                          Download SQL
                         </Button>
-                        <Button size="sm" variant="outline">Restore</Button>
+                        <Button size="sm" variant="outline" className="gap-1" onClick={() => handleExport('json')}>
+                          <Download className="w-3 h-3" />
+                          Download JSON
+                        </Button>
                       </div>
                     </div>
 
-                    <div className="p-4 border border-border rounded-lg">
+                    <div className="p-4 border border-border rounded-lg bg-card/30">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <p className="font-medium">Backup - May 9, 2026</p>
-                          <p className="text-sm text-muted-foreground">Size: 2.2 GB</p>
+                          <p className="font-medium">Local SQLite Engine (edupath.db)</p>
+                          <p className="text-sm text-muted-foreground">Self-contained relational database on disk for zero-config deployments</p>
                         </div>
-                        <span className="text-xs bg-success/15 text-success border border-success/20 px-2 py-1 rounded font-semibold">
-                          Complete
+                        <span className="text-xs bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-1 rounded font-semibold">
+                          Active on Disk
                         </span>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="gap-1">
-                          <Download className="w-3 h-3" />
-                          Download
+                        <Button size="sm" variant="outline" className="gap-1" onClick={handleProvisionTables}>
+                          <RefreshCw className="w-3 h-3" />
+                          Re-sync Tables
                         </Button>
-                        <Button size="sm" variant="outline">Restore</Button>
                       </div>
                     </div>
                   </div>
